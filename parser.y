@@ -12,7 +12,7 @@
 
 %code requires {
     #include<stdlib.h>
-    #include "mate.h"
+    #include "../mate.h"
 
     #define YYLTYPE am_node_location_t
 

@@ -1,5 +1,5 @@
 %top {
-    #include "mate.h"
+    #include "../mate.h"
     #include "parser.h"
     #define YY_EXTRA_TYPE am_parser_t*
     #define yyterminate() return T_EOF;
