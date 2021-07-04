@@ -5,9 +5,9 @@
     extern "C" {
 #endif
 
-#ifndef AM_INCLUDE_STDIO
-    #include <stdio.h>
-#endif
+#include <stdio.h>
+#include <stdint.h>
+#include <inttypes.h>
 
 // Node location
 typedef struct {

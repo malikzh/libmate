@@ -2,3 +2,7 @@ build/
 .vscode/
 .idea/
 .DS_Store/
+parser.c
+parser.h
+lexer.c
+/parser.output
