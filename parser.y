@@ -69,7 +69,7 @@
 %type <node> typename function_argument function_arguments expression_function function_call
 %type <node> expression_postfix expression_prefix expression_mul expression_power expression_add
 %type <node> expression_rel expression_eq expression_and expression_or expression_specific 
-%type <node> expression_ternary expression_assign
+%type <node> expression_ternary expression_assign function_arguments_types_only typename_func
 
 %start program 
 %%
@@ -78,8 +78,21 @@ symbol: symbol '.' T_IDENTIFIER                         { $$ = NODE_AS(AM_S_SYMB
       | T_IDENTIFIER                                    { $$ = NODE_S(AM_S_SYMBOL, $1); }
       ;
 
+function_arguments_types_only: %empty                                     { $$ = NULL; }
+                             | function_arguments_types_only ',' typename { $$ = NODE_AB(AM_S_TYPENAME, $1, $3); }
+                             | typename                                   { $$ = $1; }
+                             ;
+
+typename_func: T_FUNC '(' function_arguments_types_only ')' '<' typename '>'  { $$ = NODE_AB(AM_S_TYPENAME_FUNC, $3, $6); }
+             | T_FUNC '(' function_arguments_types_only ')' { $$ = NODE_A(AM_S_TYPENAME_FUNC, $3); }
+             ;
+
 typename: typename '|' symbol                           { $$ = NODE_AB(AM_S_TYPENAME, $1, $3); }
+        | symbol '[' ']'                                { $$ = NODE_A(AM_S_TYPENAME_ARRAY_OF, $1); }
         | symbol                                        { $$ = $1; }
+        | T_ARRAY                                       { $$ = NODE(AM_S_TYPENAME_ARRAY); }
+        | T_STRUCT                                      { $$ = NODE(AM_S_TYPENAME_STRUCT); }
+        | typename_func                                 { $$ = NODE_A(AM_S_TYPENAME_FUNC, $1); }
         ;
 
 array_literal_items: array_literal_items ',' expression { $$ = NODE_AB(AM_S_ARRAY_ITEMS, $1, $3); }
@@ -112,6 +125,7 @@ function_arguments: %empty                                   { $$ = NULL; }
                   ;
 
 expression_function: T_FUNC '(' function_arguments ')' '{' function_body '}' { $$ = NODE_AB(AM_S_FUNCTION_CALLBACK, $3, $6); }
+                   | T_FUNC '(' function_arguments ')' '<' typename '>' '{' function_body '}' { $$ = NODE_ABC(AM_S_FUNCTION_CALLBACK, $3, $9, $6); }
                    ;
 
 
