@@ -22,6 +22,11 @@ typedef enum {
     // Instructions
         AM_I_NOP = 0,            // No operation
         AM_I_RESOLVE_VARIABLE,   // Get variable value by name
+        AM_I_FUNC_CALL,
+        AM_I_INDEX,
+        AM_I_OBJECT_INDEX,
+        AM_I_POST_INC,
+        AM_I_POST_DEC,
 
         // Structure
         AM_S_ROOT,           // root node

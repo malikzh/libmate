@@ -65,7 +65,8 @@
 %type <str> T_IDENTIFIER T_STRING T_INTEGER T_FLOAT T_VARIABLE
 %type <node> source_code expression_primary symbol expression_literal expression array_literal_items
 %type <node> array_literal struct_literal_items struct_literal_item struct_literal function_body
-%type <node> typename function_argument function_arguments expression_function
+%type <node> typename function_argument function_arguments expression_function function_call
+%type <node> expression_postfix
 
 %start program 
 %%
@@ -126,11 +127,24 @@ expression_literal: T_STRING                            { $$ = NODE_S(AM_S_STRIN
 
 
 expression_primary: T_VARIABLE                          { $$ = NODE_S(AM_I_RESOLVE_VARIABLE, $1); }
-                  | symbol                              { $$ = $1; }
+                  | T_IDENTIFIER                        { $$ = NODE_S(AM_S_SYMBOL, $1); }
                   | expression_literal                  { $$ = $1; }
+                  | '(' expression ')'                  { $$ = $2; }
                   ;
 
-expression: expression_primary                          { $$ = $1; }
+function_call: expression_postfix '(' ')'               { $$ = NODE_A(AM_I_FUNC_CALL, $1) }
+             | expression_postfix '(' array_literal_items ')' { $$ = NODE_AB(AM_I_FUNC_CALL, $1, $3); }
+             ;
+
+expression_postfix: function_call                         { $$ = $1; }
+                  | expression_postfix '[' expression ']' { $$ = NODE_AB(AM_I_INDEX, $1, $3); }
+                  | expression_postfix T_INCREMENT        { $$ = NODE_A(AM_I_POST_INC, $1); }
+                  | expression_postfix T_DECREMENT        { $$ = NODE_A(AM_I_POST_DEC, $1); }
+                  | expression_postfix '.' T_IDENTIFIER   { $$ = NODE_AS(AM_I_OBJECT_INDEX, $1, $3); }
+                  | expression_primary                    { $$ = $1; }
+                  ;
+
+expression: expression_postfix                          { $$ = $1; }
           ;
 
 function_body: %empty                                   { $$ = NULL; }
