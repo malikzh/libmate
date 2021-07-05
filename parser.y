@@ -69,7 +69,7 @@
 %type <node> typename function_argument function_arguments expression_function function_call
 %type <node> expression_postfix expression_prefix expression_mul expression_power expression_add
 %type <node> expression_rel expression_eq expression_and expression_or expression_specific 
-%type <node> expression_ternary
+%type <node> expression_ternary expression_assign
 
 %start program 
 %%
@@ -201,7 +201,16 @@ expression_ternary: expression_or                             { $$ = $1; }
                   | expression_or '?' expression_ternary ':' expression_ternary { $$ = NODE_ABC(AM_I_TERNARY, $1, $3, $5); }
                   ;
 
-expression: expression_ternary                                { $$ = $1; }
+expression_assign: expression_ternary                                   { $$ = $1; }
+                 | expression_postfix '=' expression_assign             { $$ = NODE_AB(AM_I_ASSIGN, $1, $3); }
+                 | expression_postfix T_ASSIGN_ADD expression_assign    { $$ = NODE_AB(AM_I_ASSIGN_ADD, $1, $3); }
+                 | expression_postfix T_ASSIGN_SUB expression_assign    { $$ = NODE_AB(AM_I_ASSIGN_SUB, $1, $3); }
+                 | expression_postfix T_ASSIGN_MUL expression_assign    { $$ = NODE_AB(AM_I_ASSIGN_MUL, $1, $3); }
+                 | expression_postfix T_ASSIGN_DIV expression_assign    { $$ = NODE_AB(AM_I_ASSIGN_DIV, $1, $3); }
+                 | expression_postfix T_ASSIGN_MOD expression_assign    { $$ = NODE_AB(AM_I_ASSIGN_MOD, $1, $3); }
+                 ;
+
+expression: expression_assign                                { $$ = $1; }
           ;
 
 function_body: %empty                                   { $$ = NULL; }

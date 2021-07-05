@@ -51,6 +51,12 @@ typedef enum {
         AM_I_TYPEOF,
         AM_I_ERROF,
         AM_I_TERNARY,
+        AM_I_ASSIGN,
+        AM_I_ASSIGN_ADD,
+        AM_I_ASSIGN_SUB,
+        AM_I_ASSIGN_MUL,
+        AM_I_ASSIGN_DIV,
+        AM_I_ASSIGN_MOD,
 
         // Structure
         AM_S_ROOT,           // root node
