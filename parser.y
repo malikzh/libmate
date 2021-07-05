@@ -67,7 +67,7 @@
 %type <node> array_literal struct_literal_items struct_literal_item struct_literal function_body
 %type <node> typename function_argument function_arguments expression_function function_call
 %type <node> expression_postfix expression_prefix expression_mul expression_power expression_add
-%type <node> expression_rel expression_eq
+%type <node> expression_rel expression_eq expression_and expression_or
 
 %start program 
 %%
@@ -181,7 +181,15 @@ expression_eq: expression_rel                             { $$ = $1; }
              | expression_eq T_NOT_EQUAL expression_rel   { $$ = NODE_AB(AM_I_NEQ, $1, $3); }
              ;
 
-expression: expression_eq                                { $$ = $1; }
+expression_and: expression_eq                             { $$ = $1; }
+              | expression_and T_AND expression_eq        { $$ = NODE_AB(AM_I_AND, $1, $3); }
+              ;
+
+expression_or: expression_and                             { $$ = $1; }
+             | expression_or T_OR expression_and        { $$ = NODE_AB(AM_I_OR, $1, $3); }
+             ;
+
+expression: expression_or                                { $$ = $1; }
           ;
 
 function_body: %empty                                   { $$ = NULL; }
