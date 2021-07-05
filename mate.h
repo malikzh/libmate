@@ -33,6 +33,10 @@ typedef enum {
         AM_I_UMINUS,
         AM_I_NOT,
         AM_I_CAST,
+        AM_I_POW,
+        AM_I_MUL,
+        AM_I_DIV,
+        AM_I_MOD,
 
         // Structure
         AM_S_ROOT,           // root node
