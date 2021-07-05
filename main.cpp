@@ -6,6 +6,8 @@ int main(int argc, char** argv) {
     am_parser_parse(parser);
     am_parser_destroy(parser);
 
+    auto ast = am_parser_get_ast_root(parser);
+
     std::cout <<  "end" << std::endl;
     return 0;
 }
