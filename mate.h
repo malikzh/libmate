@@ -24,8 +24,23 @@ typedef enum {
         AM_I_RESOLVE_VARIABLE,   // Get variable value by name
 
         // Structure
-        AM_S_ROOT,          // root node
-        AM_S_IM,             // intermediate node
+        AM_S_ROOT,           // root node
+        AM_S_SYMBOL,         // symbol part
+        AM_S_ARRAY_ITEMS,
+        AM_S_ARRAY,
+        AM_S_STRING,
+        AM_S_INT,
+        AM_S_FLOAT,
+        AM_S_TRUE,
+        AM_S_FALSE,
+        AM_S_NULL,
+        AM_S_STRUCT_ITEMS,
+        AM_S_STRUCT_ITEM,
+        AM_S_STRUCT,
+        AM_S_TYPENAME,
+        AM_S_FUNCTION_ARGUMENT,
+        AM_S_FUNCTION_ARGUMENTS,
+        AM_S_FUNCTION_CALLBACK,
 } am_node_mean_t;
 
 typedef struct am_node_t_ {

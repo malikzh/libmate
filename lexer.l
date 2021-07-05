@@ -119,7 +119,7 @@ bin        [01]
     "const"                  return T_CONST;
     "native"                 return T_NATIVE;
 
-    {alpha}{alphadigit}*     return T_IDENTIFIER;
+    {alpha}{alphadigit}*     { yylval->str = strdup(yytext); return T_IDENTIFIER; }
     \"                       { BEGIN(STRING_D); STRBUF_CLEAR(); }
     \'                       { BEGIN(STRING_S); STRBUF_CLEAR(); }
     0x{hex}+                 { yylval->i = strtol(yytext + 2, NULL, 16); return T_INTEGER; }
