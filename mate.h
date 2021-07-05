@@ -27,6 +27,12 @@ typedef enum {
         AM_I_OBJECT_INDEX,
         AM_I_POST_INC,
         AM_I_POST_DEC,
+        AM_I_PRE_INC,
+        AM_I_PRE_DEC,
+        AM_I_UPLUS,
+        AM_I_UMINUS,
+        AM_I_NOT,
+        AM_I_CAST,
 
         // Structure
         AM_S_ROOT,           // root node

@@ -66,7 +66,7 @@
 %type <node> source_code expression_primary symbol expression_literal expression array_literal_items
 %type <node> array_literal struct_literal_items struct_literal_item struct_literal function_body
 %type <node> typename function_argument function_arguments expression_function function_call
-%type <node> expression_postfix
+%type <node> expression_postfix expression_prefix
 
 %start program 
 %%
@@ -144,7 +144,16 @@ expression_postfix: function_call                         { $$ = $1; }
                   | expression_primary                    { $$ = $1; }
                   ;
 
-expression: expression_postfix                          { $$ = $1; }
+expression_prefix: expression_postfix                     { $$ = $1; }
+                 | T_INCREMENT expression_postfix         { $$ = NODE_A(AM_I_PRE_INC, $2); }
+                 | T_DECREMENT expression_postfix         { $$ = NODE_A(AM_I_PRE_DEC, $2); }
+                 | '+' expression_prefix                  { $$ = NODE_A(AM_I_UPLUS, $2); }
+                 | '-' expression_prefix                  { $$ = NODE_A(AM_I_UMINUS, $2); }
+                 | T_NOT expression_prefix                { $$ = NODE_A(AM_I_NOT, $2); }
+                 | '<' symbol '>' expression_prefix       { $$ = NODE_AB(AM_I_CAST, $4, $2); }
+                 ;
+
+expression: expression_prefix                           { $$ = $1; }
           ;
 
 function_body: %empty                                   { $$ = NULL; }
