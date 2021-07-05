@@ -66,7 +66,7 @@
 %type <node> source_code expression_primary symbol expression_literal expression array_literal_items
 %type <node> array_literal struct_literal_items struct_literal_item struct_literal function_body
 %type <node> typename function_argument function_arguments expression_function function_call
-%type <node> expression_postfix expression_prefix expression_mul expression_power
+%type <node> expression_postfix expression_prefix expression_mul expression_power expression_add
 
 %start program 
 %%
@@ -163,7 +163,12 @@ expression_mul: expression_power                          { $$ = $1; }
               | expression_mul '%' expression_power       { $$ = NODE_AB(AM_I_MOD, $1, $3); }
               ;
 
-expression: expression_mul                           { $$ = $1; }
+expression_add: expression_mul                            { $$ = $1; }
+              | expression_add '+' expression_mul         { $$ = NODE_AB(AM_I_ADD, $1, $3); } 
+              | expression_add '-' expression_mul         { $$ = NODE_AB(AM_I_SUB, $1, $3); } 
+              ;
+
+expression: expression_add                                { $$ = $1; }
           ;
 
 function_body: %empty                                   { $$ = NULL; }

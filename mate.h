@@ -37,6 +37,8 @@ typedef enum {
         AM_I_MUL,
         AM_I_DIV,
         AM_I_MOD,
+        AM_I_ADD,
+        AM_I_SUB,
 
         // Structure
         AM_S_ROOT,           // root node
