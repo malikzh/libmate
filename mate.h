@@ -39,6 +39,10 @@ typedef enum {
         AM_I_MOD,
         AM_I_ADD,
         AM_I_SUB,
+        AM_I_GT,
+        AM_I_LT,
+        AM_I_LTE,
+        AM_I_GTE,
 
         // Structure
         AM_S_ROOT,           // root node
