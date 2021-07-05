@@ -47,6 +47,9 @@ typedef enum {
         AM_I_NEQ,
         AM_I_AND,
         AM_I_OR,
+        AM_I_IMPLEMENTS,
+        AM_I_TYPEOF,
+        AM_I_ERROF,
 
         // Structure
         AM_S_ROOT,           // root node

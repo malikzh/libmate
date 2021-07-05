@@ -67,7 +67,7 @@
 %type <node> array_literal struct_literal_items struct_literal_item struct_literal function_body
 %type <node> typename function_argument function_arguments expression_function function_call
 %type <node> expression_postfix expression_prefix expression_mul expression_power expression_add
-%type <node> expression_rel expression_eq expression_and expression_or
+%type <node> expression_rel expression_eq expression_and expression_or expression_specific
 
 %start program 
 %%
@@ -152,10 +152,16 @@ expression_prefix: expression_postfix                     { $$ = $1; }
                  | '-' expression_prefix                  { $$ = NODE_A(AM_I_UMINUS, $2); }
                  | T_NOT expression_prefix                { $$ = NODE_A(AM_I_NOT, $2); }
                  | '<' symbol '>' expression_prefix       { $$ = NODE_AB(AM_I_CAST, $4, $2); }
+                 | '@' expression_postfix                 { $$ = NODE_A(AM_I_ERROF, $2); }
                  ;
 
-expression_power: expression_prefix                       { $$ = $1; }
-                | expression_prefix T_POWER expression_power { $$ = NODE_AB(AM_I_POW, $1, $3); }
+expression_specific: expression_prefix                                { $$ = $1; }
+                   | expression_prefix T_IMPLEMENTS expression_prefix { $$ = NODE_AB(AM_I_IMPLEMENTS, $1, $3); }
+                   | T_TYPEOF expression_prefix                       { $$ = NODE_A(AM_I_TYPEOF, $2); }
+                   ;
+
+expression_power: expression_specific                          { $$ = $1; }
+                | expression_specific T_POWER expression_power { $$ = NODE_AB(AM_I_POW, $1, $3); }
                 ;
 
 expression_mul: expression_power                          { $$ = $1; }
