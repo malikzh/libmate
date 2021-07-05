@@ -138,8 +138,8 @@ function_call: expression_postfix '(' ')'               { $$ = NODE_A(AM_I_FUNC_
 
 expression_postfix: function_call                         { $$ = $1; }
                   | expression_postfix '[' expression ']' { $$ = NODE_AB(AM_I_INDEX, $1, $3); }
-                  | expression_postfix T_INCREMENT        { $$ = NODE_A(AM_I_POST_INC, $1); }
-                  | expression_postfix T_DECREMENT        { $$ = NODE_A(AM_I_POST_DEC, $1); }
+                  | expression_primary T_INCREMENT        { $$ = NODE_A(AM_I_POST_INC, $1); }
+                  | expression_primary T_DECREMENT        { $$ = NODE_A(AM_I_POST_DEC, $1); }
                   | expression_postfix '.' T_IDENTIFIER   { $$ = NODE_AS(AM_I_OBJECT_INDEX, $1, $3); }
                   | expression_primary                    { $$ = $1; }
                   ;
