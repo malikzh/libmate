@@ -48,6 +48,7 @@
         #define NODE(mean) ast_create_node(mean, &yylloc, NULL, NULL, NULL, NULL);
         #define NODE_A(mean, a) ast_create_node(mean, &yylloc, a, NULL, NULL, NULL);
         #define NODE_AB(mean, a, b) ast_create_node(mean, &yylloc, a, b, NULL, NULL);
+        #define NODE_ABC(mean, a, b, c) ast_create_node(mean, &yylloc, a, b, c, NULL);
         #define NODE_S(mean, str) ast_create_node(mean, &yylloc, NULL, NULL, NULL, str)
         #define NODE_AS(mean, a, str) ast_create_node(mean, &yylloc, a, NULL, NULL, str)
 %}
@@ -67,7 +68,8 @@
 %type <node> array_literal struct_literal_items struct_literal_item struct_literal function_body
 %type <node> typename function_argument function_arguments expression_function function_call
 %type <node> expression_postfix expression_prefix expression_mul expression_power expression_add
-%type <node> expression_rel expression_eq expression_and expression_or expression_specific
+%type <node> expression_rel expression_eq expression_and expression_or expression_specific 
+%type <node> expression_ternary
 
 %start program 
 %%
@@ -195,7 +197,11 @@ expression_or: expression_and                             { $$ = $1; }
              | expression_or T_OR expression_and        { $$ = NODE_AB(AM_I_OR, $1, $3); }
              ;
 
-expression: expression_or                                { $$ = $1; }
+expression_ternary: expression_or                             { $$ = $1; }
+                  | expression_or '?' expression_ternary ':' expression_ternary { $$ = NODE_ABC(AM_I_TERNARY, $1, $3, $5); }
+                  ;
+
+expression: expression_ternary                                { $$ = $1; }
           ;
 
 function_body: %empty                                   { $$ = NULL; }

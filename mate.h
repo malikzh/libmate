@@ -50,6 +50,7 @@ typedef enum {
         AM_I_IMPLEMENTS,
         AM_I_TYPEOF,
         AM_I_ERROF,
+        AM_I_TERNARY,
 
         // Structure
         AM_S_ROOT,           // root node
