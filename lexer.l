@@ -96,11 +96,9 @@ bin        [01]
     "typeof"                 return T_TYPEOF;
     "func"                   return T_FUNC;
     "defer"                  return T_DEFER;
-    "error"                  return T_ERROR;
     "if"                     return T_IF;
     "else"                   return T_ELSE;
     "dump"                   return T_DUMP;
-    "reset"                  return T_RESET;
     "require"                return T_REQUIRE;
     "switch"                 return T_SWITCH;
     "case"                   return T_CASE;
