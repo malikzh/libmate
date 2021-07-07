@@ -48,7 +48,7 @@ bin        [01]
 <INITIAL>{
     {whitespace}+            ;
     {newline}                ;
-    ";"                      ;
+    ";"                      return ';';
 
 
     "++"                     return T_INCREMENT;
