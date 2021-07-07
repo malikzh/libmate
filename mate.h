@@ -49,7 +49,7 @@ typedef enum {
         AM_I_OR,
         AM_I_IMPLEMENTS,
         AM_I_TYPEOF,
-        AM_I_ERROF,
+        AM_I_METAOF,
         AM_I_TERNARY,
         AM_I_ASSIGN,
         AM_I_ASSIGN_ADD,

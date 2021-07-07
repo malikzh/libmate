@@ -158,9 +158,10 @@ expression_postfix: function_call                         { $$ = $1; }
                   | expression_primary T_INCREMENT        { $$ = NODE_A(AM_I_POST_INC, $1); }
                   | expression_primary T_DECREMENT        { $$ = NODE_A(AM_I_POST_DEC, $1); }
                   | expression_postfix '.' T_IDENTIFIER   { $$ = NODE_AS(AM_I_OBJECT_INDEX, $1, $3); }
+                  | expression_postfix '@'                { $$ = NODE_A(AM_I_METAOF, $1); }
                   | expression_primary                    { $$ = $1; }
                   ;
-
+               
 expression_prefix: expression_postfix                     { $$ = $1; }
                  | T_INCREMENT expression_postfix         { $$ = NODE_A(AM_I_PRE_INC, $2); }
                  | T_DECREMENT expression_postfix         { $$ = NODE_A(AM_I_PRE_DEC, $2); }
@@ -168,7 +169,6 @@ expression_prefix: expression_postfix                     { $$ = $1; }
                  | '-' expression_prefix                  { $$ = NODE_A(AM_I_UMINUS, $2); }
                  | T_NOT expression_prefix                { $$ = NODE_A(AM_I_NOT, $2); }
                  | '<' symbol '>' expression_prefix       { $$ = NODE_AB(AM_I_CAST, $4, $2); }
-                 | '@' expression_postfix                 { $$ = NODE_A(AM_I_ERROF, $2); }
                  ;
 
 expression_specific: expression_prefix                                { $$ = $1; }
