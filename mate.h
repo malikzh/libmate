@@ -98,6 +98,7 @@ typedef enum {
         AM_S_FOR_HEAD,
         AM_S_FOR,
         AMS_S_FOREACH_HEAD,
+        AM_S_EXPRESSIONS,
 } am_node_mean_t;
 
 typedef struct am_node_t_ {

@@ -75,6 +75,7 @@
 %type <node> stmt_switch stmt_case_body_list stmt_case_body stmt_continue stmt_break stmt_var 
 %type <node> stmt_var_type stmt_var_expression stmt_const stmt_return stmt_while stmt_while_else
 %type <node> stmt_for_init stmt_for_condition stmt_for_action stmt_for stmt_for_head stmt_foreach_head
+%type <node> expression_list stmt_for_init_expression stmt_for_init_expression_list
 
 %start program 
 %%
@@ -232,6 +233,10 @@ expression_assign: expression_ternary                                   { $$ = $
 expression: expression_assign                                { $$ = $1; }
           ;
 
+expression_list: expression_list ',' expression                      { $$ = NODE_AB(AM_S_EXPRESSIONS, $1, $3); }
+               | expression                                      { $$ = $1; }
+               ;
+
 stmt_defer: T_DEFER expression ';'                           { $$ = NODE_A(AM_S_DEFER, $2); }
           ;
 
@@ -294,22 +299,30 @@ stmt_while: T_WHILE expression '{' function_body '}' stmt_while_else     { $$ = 
           | T_WHILE '{' function_body '}' stmt_while_else                { $$ = NODE_ABC(AM_S_WHILE, NULL, $3, $5); }
           ;
 
-stmt_for_init: statement                                                 { $$ = $1; }
+stmt_for_init_expression: expression                                     { $$ = $1; }
+                        | stmt_var                                       { $$ = $1; }
+                        ;
+
+stmt_for_init_expression_list: stmt_for_init_expression_list ',' stmt_for_init_expression   { $$ =  NODE_AB(AM_S_STATEMENTS, $1, $3); }
+                             | stmt_for_init_expression                                     { $$ = $1; }
+                             ;
+                             
+stmt_for_init: stmt_for_init_expression_list ';'                         { $$ = $1; }
              | ';'                                                       { $$ = NULL; }
              ;
 
-stmt_for_condition: expression ';'                                       { $$ = $1; }
+stmt_for_condition: expression_list ';'                                  { $$ = $1; }
                   | ';'                                                  { $$ = NULL; }
                   ;
 
-stmt_for_action: expression                                              { $$ = $1; }
+stmt_for_action: expression_list                                         { $$ = $1; }
                | %empty                                                  { $$ = NULL; }
                ;
 
 stmt_for_head: stmt_for_init stmt_for_condition stmt_for_action          { $$ = NODE_ABC(AM_S_FOR_HEAD, $1, $2, $3); }
              ;
 
-stmt_foreach_head: expression_postfix ':' expression                             { $$ = NODE_AB(AMS_S_FOREACH_HEAD, $1, $3); }
+stmt_foreach_head: expression_postfix ':' expression                     { $$ = NODE_AB(AMS_S_FOREACH_HEAD, $1, $3); }
                  ;
 
 stmt_for: T_FOR stmt_for_head '{' function_body '}' stmt_while_else      { $$ = NODE_ABC(AM_S_FOR, $2, $4, $6); }
