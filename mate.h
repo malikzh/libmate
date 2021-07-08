@@ -99,12 +99,18 @@ typedef enum {
         AM_S_FOR,
         AMS_S_FOREACH_HEAD,
         AM_S_EXPRESSIONS,
+        AM_S_REQUIRE_ITEM,
+        AM_S_REQUIRE_ITEM_LIST,
+        AM_S_REQUIRE,
+        AM_S_DEFINES,
+        AM_S_FUNC,
 } am_node_mean_t;
 
 typedef struct am_node_t_ {
     am_node_mean_t mean; // meaning of node
     am_node_location_t location;
     const char* str;
+    const char* str2;
 
     struct am_node_t_* a;
     struct am_node_t_* b;

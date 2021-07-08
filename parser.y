@@ -45,13 +45,15 @@
 
 %{
         //
-        #define NODE(mean) ast_create_node(mean, &yylloc, NULL, NULL, NULL, NULL);
-        #define NODE_A(mean, a) ast_create_node(mean, &yylloc, a, NULL, NULL, NULL);
-        #define NODE_AB(mean, a, b) ast_create_node(mean, &yylloc, a, b, NULL, NULL);
-        #define NODE_ABC(mean, a, b, c) ast_create_node(mean, &yylloc, a, b, c, NULL);
-        #define NODE_S(mean, str) ast_create_node(mean, &yylloc, NULL, NULL, NULL, str)
-        #define NODE_AS(mean, a, str) ast_create_node(mean, &yylloc, a, NULL, NULL, str)
-        #define NODE_ABS(mean, a, b, str) ast_create_node(mean, &yylloc, a, b, NULL, str)
+        #define NODE(mean) ast_create_node(mean, &yylloc, NULL, NULL, NULL, NULL, NULL);
+        #define NODE_A(mean, a) ast_create_node(mean, &yylloc, a, NULL, NULL, NULL, NULL);
+        #define NODE_AB(mean, a, b) ast_create_node(mean, &yylloc, a, b, NULL, NULL, NULL);
+        #define NODE_ABC(mean, a, b, c) ast_create_node(mean, &yylloc, a, b, c, NULL, NULL);
+        #define NODE_ABCS(mean, a, b, c, s) ast_create_node(mean, &yylloc, a, b, c, s, NULL);
+        #define NODE_S(mean, str) ast_create_node(mean, &yylloc, NULL, NULL, NULL, str, NULL)
+        #define NODE_SS(mean, str, str2) ast_create_node(mean, &yylloc, NULL, NULL, NULL, str, str2)
+        #define NODE_AS(mean, a, str) ast_create_node(mean, &yylloc, a, NULL, NULL, str, NULL)
+        #define NODE_ABS(mean, a, b, str) ast_create_node(mean, &yylloc, a, b, NULL, str, NULL)
 %}
 
 %token T_EOF 0 "T_EOF"
@@ -75,7 +77,8 @@
 %type <node> stmt_switch stmt_case_body_list stmt_case_body stmt_continue stmt_break stmt_var 
 %type <node> stmt_var_type stmt_var_expression stmt_const stmt_return stmt_while stmt_while_else
 %type <node> stmt_for_init stmt_for_condition stmt_for_action stmt_for stmt_for_head stmt_foreach_head
-%type <node> expression_list stmt_for_init_expression stmt_for_init_expression_list
+%type <node> expression_list stmt_for_init_expression stmt_for_init_expression_list require_item
+%type <node> require_item_list block_require block_define define_func block_define_list block_definitions
 
 %start program 
 %%
@@ -351,10 +354,38 @@ function_body: %empty                                        { $$ = NULL; }
              | statements                                    { $$ = $1; }
              ;
 
-source_code: function_body                                   { $$ = $1; }
+
+require_item: T_IDENTIFIER T_STRING                          { $$ = NODE_SS(AM_S_REQUIRE_ITEM, $1, $2); }
+            | '.' T_STRING                                   { $$ = NODE_SS(AM_S_REQUIRE_ITEM, ".", $2); }
+            | T_STRING                                       { $$ = NODE_S(AM_S_REQUIRE_ITEM, $1); }
+            ;
+
+require_item_list: require_item_list require_item            { $$ = NODE_AB(AM_S_REQUIRE_ITEM_LIST, $1, $2);  }
+                 | require_item                              { $$ = $1; }
+                 ;
+
+block_require: T_REQUIRE '(' require_item_list ')'           { $$ = NODE_A(AM_S_REQUIRE, $3); }
+             | %empty                                        { $$ = NULL; }
+             ;
+
+define_func: T_FUNC T_IDENTIFIER '(' function_arguments ')' '<' typename '>' '{' function_body '}' { $$ = NODE_ABCS(AM_S_FUNC, $4, $7, $10, $2); }
            ;
 
-program: source_code                                    { info->root = NODE_A(AM_S_ROOT, $1); }
+block_define: T_DEFINE define_func                           { $$ = $2; }
+            ;
+
+block_define_list: block_define_list block_define            { $$ = NODE_AB(AM_S_DEFINES, $1, $2); }
+                 | block_define                              { $$ = $1; }
+                 ;
+
+block_definitions: %empty                                    { $$ = NULL; }
+                 | block_define_list                         { $$ = $1; }
+                 ;
+
+source_code: block_require block_definitions                 { $$ = NODE_AB(AM_S_ROOT, $1, $2); }
+           ;
+
+program: source_code                                    { info->root = $1; }
        ;
 %%
 
