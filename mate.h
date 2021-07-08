@@ -115,6 +115,7 @@ typedef struct am_node_t_ {
     struct am_node_t_* a;
     struct am_node_t_* b;
     struct am_node_t_* c;
+    struct am_node_t_* d;
 } am_node_t;
 
 

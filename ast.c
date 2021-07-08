@@ -2,12 +2,13 @@
 #include "mate.h"
 #include "ast.h"
 
-am_node_t* ast_create_node(am_node_mean_t meaning, const am_node_location_t* location, am_node_t* a, am_node_t* b, am_node_t* c, const char* str, const char* str2) {
+am_node_t* ast_create_node(am_node_mean_t meaning, const am_node_location_t* location, am_node_t* a, am_node_t* b, am_node_t* c, am_node_t* d, const char* str, const char* str2) {
     am_node_t* n = (am_node_t*)calloc(1, sizeof(am_node_t));
     n->mean = meaning;
     n->a = a;
     n->b = b;
     n->c = c;
+    n->d = d;
     n->str = str;
     n->str2 = str2;
 

@@ -45,15 +45,16 @@
 
 %{
         //
-        #define NODE(mean) ast_create_node(mean, &yylloc, NULL, NULL, NULL, NULL, NULL);
-        #define NODE_A(mean, a) ast_create_node(mean, &yylloc, a, NULL, NULL, NULL, NULL);
-        #define NODE_AB(mean, a, b) ast_create_node(mean, &yylloc, a, b, NULL, NULL, NULL);
-        #define NODE_ABC(mean, a, b, c) ast_create_node(mean, &yylloc, a, b, c, NULL, NULL);
-        #define NODE_ABCS(mean, a, b, c, s) ast_create_node(mean, &yylloc, a, b, c, s, NULL);
-        #define NODE_S(mean, str) ast_create_node(mean, &yylloc, NULL, NULL, NULL, str, NULL)
-        #define NODE_SS(mean, str, str2) ast_create_node(mean, &yylloc, NULL, NULL, NULL, str, str2)
-        #define NODE_AS(mean, a, str) ast_create_node(mean, &yylloc, a, NULL, NULL, str, NULL)
-        #define NODE_ABS(mean, a, b, str) ast_create_node(mean, &yylloc, a, b, NULL, str, NULL)
+        #define NODE(mean) ast_create_node(mean, &yylloc, NULL, NULL, NULL, NULL, NULL, NULL);
+        #define NODE_A(mean, a) ast_create_node(mean, &yylloc, a, NULL, NULL, NULL, NULL, NULL);
+        #define NODE_AB(mean, a, b) ast_create_node(mean, &yylloc, a, b, NULL, NULL, NULL, NULL);
+        #define NODE_ABC(mean, a, b, c) ast_create_node(mean, &yylloc, a, b, c, NULL, NULL, NULL);
+        #define NODE_ABCD(mean, a, b, c, d) ast_create_node(mean, &yylloc, a, b, c, d, NULL, NULL);
+        #define NODE_ABCS(mean, a, b, c, s) ast_create_node(mean, &yylloc, a, b, c, NULL, s, NULL);
+        #define NODE_S(mean, str) ast_create_node(mean, &yylloc, NULL, NULL, NULL, NULL, str, NULL)
+        #define NODE_SS(mean, str, str2) ast_create_node(mean, &yylloc, NULL, NULL, NULL, NULL, str, str2)
+        #define NODE_AS(mean, a, str) ast_create_node(mean, &yylloc, a, NULL, NULL, NULL, str, NULL)
+        #define NODE_ABS(mean, a, b, str) ast_create_node(mean, &yylloc, a, b, NULL, NULL, str, NULL)
 %}
 
 %token T_EOF 0 "T_EOF"
@@ -368,7 +369,7 @@ block_require: T_REQUIRE '(' require_item_list ')'           { $$ = NODE_A(AM_S_
              | %empty                                        { $$ = NULL; }
              ;
 
-define_func: T_FUNC T_IDENTIFIER '(' function_arguments ')' '<' typename '>' '{' function_body '}' { $$ = NODE_ABCS(AM_S_FUNC, $4, $7, $10, $2); }
+define_func: T_FUNC symbol '(' function_arguments ')' '<' typename '>' '{' function_body '}' { $$ = NODE_ABCD(AM_S_FUNC, $2, $4, $7, $10); }
            ;
 
 block_define: T_DEFINE define_func                           { $$ = $2; }
