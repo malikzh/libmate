@@ -51,6 +51,7 @@
         #define NODE_ABC(mean, a, b, c) ast_create_node(mean, &yylloc, a, b, c, NULL);
         #define NODE_S(mean, str) ast_create_node(mean, &yylloc, NULL, NULL, NULL, str)
         #define NODE_AS(mean, a, str) ast_create_node(mean, &yylloc, a, NULL, NULL, str)
+        #define NODE_ABS(mean, a, b, str) ast_create_node(mean, &yylloc, a, b, NULL, str)
 %}
 
 %token T_EOF 0 "T_EOF"
@@ -71,7 +72,8 @@
 %type <node> expression_rel expression_eq expression_and expression_or expression_specific 
 %type <node> expression_ternary expression_assign function_arguments_types_only typename_func
 %type <node> statement statements stmt_defer stmt_if stmt_dump stmt_case stmt_default
-%type <node> stmt_switch stmt_case_body_list stmt_case_body
+%type <node> stmt_switch stmt_case_body_list stmt_case_body stmt_continue stmt_break stmt_var 
+%type <node> stmt_var_type stmt_var_expression stmt_const
 
 %start program 
 %%
@@ -258,11 +260,37 @@ stmt_switch: T_SWITCH expression '{' stmt_case_body_list stmt_default '}' { $$ =
            | T_SWITCH '{' stmt_case_body_list stmt_default '}'            { $$ = NODE_ABC(AM_S_SWITCH, NULL, $3, $4); }
            ;
 
+stmt_continue: T_CONTINUE T_INTEGER ';'                      { $$ = NODE_S(AM_I_CONTINUE, $2); }
+             | T_CONTINUE ';'                                { $$ = NODE_S(AM_I_CONTINUE, NULL); }
+             ;
+
+stmt_break: T_BREAK T_INTEGER ';'                            { $$ = NODE_S(AM_I_BREAK, $2); }
+          | T_BREAK ';'                                      { $$ = NODE_S(AM_I_BREAK, NULL);  }
+          ;
+
+stmt_var_type: ':' typename                                  { $$ = $2; }
+             | %empty                                        { $$ = NULL; }
+             ;
+
+stmt_var_expression: '=' expression                          { $$ = $2; }
+                   | %empty                                  { $$ = NULL; }
+                   ;
+
+stmt_var: T_VAR T_VARIABLE stmt_var_type stmt_var_expression ';'   { $$ = NODE_ABS(AM_S_VAR, $3, $4, $2); }
+        ;
+
+stmt_const: T_CONST T_VARIABLE ':' typename '=' expression ';'     { $$ = NODE_ABS(AM_S_CONST, $4, $6, $2); }
+          ;
+
 statement: expression ';'                                    { $$ = $1; }
          | stmt_defer                                        { $$ = $1; }
          | stmt_if                                           { $$ = $1; }
          | stmt_dump                                         { $$ = $1; }
          | stmt_switch                                       { $$ = $1; }
+         | stmt_continue                                     { $$ = $1; }
+         | stmt_break                                        { $$ = $1; }
+         | stmt_var                                          { $$ = $1; }
+         | stmt_const                                        { $$ = $1; }
          ;
 
 statements: statements statement                             { $$ = NODE_AB(AM_S_STATEMENTS, $1, $2); }

@@ -57,6 +57,8 @@ typedef enum {
         AM_I_ASSIGN_MUL,
         AM_I_ASSIGN_DIV,
         AM_I_ASSIGN_MOD,
+        AM_I_CONTINUE,
+        AM_I_BREAK,
 
         // Structure
         AM_S_ROOT,           // root node
@@ -89,6 +91,8 @@ typedef enum {
         AM_S_SWITCH_CASE_LIST,
         AM_S_SWITCH,
         AM_S_SWITCH_DEFAULT,
+        AM_S_VAR,
+        AM_S_CONST,
 } am_node_mean_t;
 
 typedef struct am_node_t_ {
