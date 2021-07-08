@@ -85,8 +85,8 @@ typedef enum {
         AM_S_IF,
         AM_S_DUMP,
         AM_S_CASE,
-        AM_S_CASES,
-        AM_S_CASE_BODY,
+        AM_S_SWITCH_CASE,
+        AM_S_SWITCH_CASE_LIST,
         AM_S_SWITCH,
         AM_S_SWITCH_DEFAULT,
 } am_node_mean_t;

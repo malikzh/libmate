@@ -70,7 +70,8 @@
 %type <node> expression_postfix expression_prefix expression_mul expression_power expression_add
 %type <node> expression_rel expression_eq expression_and expression_or expression_specific 
 %type <node> expression_ternary expression_assign function_arguments_types_only typename_func
-%type <node> statement statements stmt_defer stmt_if stmt_dump
+%type <node> statement statements stmt_defer stmt_if stmt_dump stmt_case stmt_default
+%type <node> stmt_switch stmt_case_body_list stmt_case_body
 
 %start program 
 %%
@@ -239,10 +240,29 @@ stmt_if: T_IF expression '{' function_body '}'                              { $$
 stmt_dump: T_DUMP expression ';'                             { $$ = NODE_A(AM_S_DUMP, $2); }
          ;
 
+stmt_case: T_CASE expression ':'                             { $$ = $2; }
+         ;
+
+stmt_case_body: stmt_case function_body                      { $$ = NODE_AB(AM_S_SWITCH_CASE, $1, $2); }
+              ;
+
+stmt_case_body_list: stmt_case_body_list stmt_case_body      { $$ = NODE_AB(AM_S_SWITCH_CASE_LIST, $1, $2); }
+                   | stmt_case_body                          { $$ = $1; }
+                   ;
+
+stmt_default: T_DEFAULT ':' function_body                    { $$ = NODE_A(AM_S_SWITCH_DEFAULT, $3); }
+            | %empty                                         { $$ = NULL; }
+            ;
+
+stmt_switch: T_SWITCH expression '{' stmt_case_body_list stmt_default '}' { $$ = NODE_ABC(AM_S_SWITCH, $2, $4, $5); }
+           | T_SWITCH '{' stmt_case_body_list stmt_default '}'            { $$ = NODE_ABC(AM_S_SWITCH, NULL, $3, $4); }
+           ;
+
 statement: expression ';'                                    { $$ = $1; }
          | stmt_defer                                        { $$ = $1; }
          | stmt_if                                           { $$ = $1; }
          | stmt_dump                                         { $$ = $1; }
+         | stmt_switch                                       { $$ = $1; }
          ;
 
 statements: statements statement                             { $$ = NODE_AB(AM_S_STATEMENTS, $1, $2); }
