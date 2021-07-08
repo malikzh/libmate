@@ -104,6 +104,9 @@ typedef enum {
         AM_S_REQUIRE,
         AM_S_DEFINES,
         AM_S_FUNC,
+        AM_S_META_TAG,
+        AM_S_META_TAG_LIST,
+        AM_S_DEFINE,
 } am_node_mean_t;
 
 typedef struct am_node_t_ {

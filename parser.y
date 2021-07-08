@@ -80,6 +80,7 @@
 %type <node> stmt_for_init stmt_for_condition stmt_for_action stmt_for stmt_for_head stmt_foreach_head
 %type <node> expression_list stmt_for_init_expression stmt_for_init_expression_list require_item
 %type <node> require_item_list block_require block_define define_func block_define_list block_definitions
+%type <node> meta_tag_values meta_tag_list meta_tag_section meta_tag
 
 %start program 
 %%
@@ -370,9 +371,26 @@ block_require: T_REQUIRE '(' require_item_list ')'           { $$ = NODE_A(AM_S_
              ;
 
 define_func: T_FUNC symbol '(' function_arguments ')' '<' typename '>' '{' function_body '}' { $$ = NODE_ABCD(AM_S_FUNC, $2, $4, $7, $10); }
+           | T_FUNC symbol '(' function_arguments ')' '{' function_body '}' { $$ = NODE_ABCD(AM_S_FUNC, $2, $4, NULL, $7); }
            ;
 
-block_define: T_DEFINE define_func                           { $$ = $2; }
+meta_tag_values: meta_tag_values expression_literal          { $$ = NODE_AB(AM_S_EXPRESSIONS, $1, $2); }
+               | expression_literal                          { $$ = $1; }
+               ;
+
+meta_tag: '@' T_IDENTIFIER meta_tag_values                   { $$ = NODE_AS(AM_S_META_TAG, $3, $2); }
+        | '@' T_IDENTIFIER                                   { $$ = NODE_AS(AM_S_META_TAG, NULL, $2); }
+        ;
+
+meta_tag_list: meta_tag_list meta_tag                        { $$ = NODE_AB(AM_S_META_TAG_LIST, $1, $2); }
+             | meta_tag                                      { $$ = $1; }
+             ;
+
+meta_tag_section: %empty                                     { $$ = NULL; }
+                | meta_tag_list                              { $$ = $1; }
+                ;
+
+block_define: meta_tag_section T_DEFINE define_func          { $$ = NODE_AB(AM_S_DEFINE, $1, $3); }
             ;
 
 block_define_list: block_define_list block_define            { $$ = NODE_AB(AM_S_DEFINES, $1, $2); }
