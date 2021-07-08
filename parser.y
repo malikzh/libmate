@@ -70,6 +70,7 @@
 %type <node> expression_postfix expression_prefix expression_mul expression_power expression_add
 %type <node> expression_rel expression_eq expression_and expression_or expression_specific 
 %type <node> expression_ternary expression_assign function_arguments_types_only typename_func
+%type <node> statement statements stmt_defer stmt_if stmt_dump
 
 %start program 
 %%
@@ -227,11 +228,32 @@ expression_assign: expression_ternary                                   { $$ = $
 expression: expression_assign                                { $$ = $1; }
           ;
 
-function_body: %empty                                   { $$ = NULL; }
-             | expression                               { $$ = $1; }
+stmt_defer: T_DEFER expression ';'                           { $$ = NODE_A(AM_S_DEFER, $2); }
+          ;
+
+stmt_if: T_IF expression '{' function_body '}'                              { $$ = NODE_AB(AM_S_IF, $2, $4); }
+       | T_IF expression '{' function_body '}' T_ELSE '{' function_body '}' { $$ = NODE_ABC(AM_S_IF, $2, $4, $8); }
+       | T_IF expression '{' function_body '}' T_ELSE stmt_if               { $$ = NODE_ABC(AM_S_IF, $2, $4, $7); }
+       ;
+
+stmt_dump: T_DUMP expression ';'                             { $$ = NODE_A(AM_S_DUMP, $2); }
+         ;
+
+statement: expression ';'                                    { $$ = $1; }
+         | stmt_defer                                        { $$ = $1; }
+         | stmt_if                                           { $$ = $1; }
+         | stmt_dump                                         { $$ = $1; }
+         ;
+
+statements: statements statement                             { $$ = NODE_AB(AM_S_STATEMENTS, $1, $2); }
+          | statement                                        { $$ = $1; }
+          ;
+
+function_body: %empty                                        { $$ = NULL; }
+             | statements                                    { $$ = $1; }
              ;
 
-source_code: function_body                              { $$ = $1; }
+source_code: function_body                                   { $$ = $1; }
            ;
 
 program: source_code                                    { info->root = NODE_A(AM_S_ROOT, $1); }

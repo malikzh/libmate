@@ -80,6 +80,15 @@ typedef enum {
         AM_S_FUNCTION_ARGUMENT,
         AM_S_FUNCTION_ARGUMENTS,
         AM_S_FUNCTION_CALLBACK,
+        AM_S_STATEMENTS,
+        AM_S_DEFER,
+        AM_S_IF,
+        AM_S_DUMP,
+        AM_S_CASE,
+        AM_S_CASES,
+        AM_S_CASE_BODY,
+        AM_S_SWITCH,
+        AM_S_SWITCH_DEFAULT,
 } am_node_mean_t;
 
 typedef struct am_node_t_ {
