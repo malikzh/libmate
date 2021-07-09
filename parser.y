@@ -81,7 +81,7 @@
 %type <node> expression_list stmt_for_init_expression stmt_for_init_expression_list require_item
 %type <node> require_item_list block_require block_define define_func block_define_list block_definitions
 %type <node> meta_tag_values meta_tag_list meta_tag_section meta_tag define_const define_right_side
-%type <node> define_alias typename_id
+%type <node> define_alias typename_id define_native
 
 %start program 
 %%
@@ -384,6 +384,10 @@ define_const: T_CONST T_VARIABLE '=' expression ';'          { $$ = NODE_AS(AM_S
 define_alias: T_ALIAS T_IDENTIFIER typename ';'              { $$ = NODE_AS(AM_S_ALIAS, $3, $2); }
             ;
 
+define_native: T_NATIVE T_IDENTIFIER '(' function_arguments ')' '<' typename '>' ';'  { $$ = NODE_ABS(AM_S_NATIVE, $4, $7, $2); }
+             | T_NATIVE T_IDENTIFIER '(' function_arguments ')' ';'  { $$ = NODE_ABS(AM_S_NATIVE, $4, NULL, $2); }
+             ;
+
 meta_tag_values: meta_tag_values expression_literal          { $$ = NODE_AB(AM_S_EXPRESSIONS, $1, $2); }
                | expression_literal                          { $$ = $1; }
                ;
@@ -403,6 +407,7 @@ meta_tag_section: %empty                                     { $$ = NULL; }
 define_right_side: define_func                               { $$ = $1; }
                  | define_const                              { $$ = $1; }
                  | define_alias                              { $$ = $1; }
+                 | define_native                             { $$ = $1; }
                  ;
 
 block_define: meta_tag_section T_DEFINE define_right_side    { $$ = NODE_AB(AM_S_DEFINE, $1, $3); }
