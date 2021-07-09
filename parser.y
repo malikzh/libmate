@@ -81,7 +81,7 @@
 %type <node> expression_list stmt_for_init_expression stmt_for_init_expression_list require_item
 %type <node> require_item_list block_require block_define define_func block_define_list block_definitions
 %type <node> meta_tag_values meta_tag_list meta_tag_section meta_tag define_const define_right_side
-%type <node> define_alias typename_id define_native
+%type <node> define_alias typename_id define_native define_struct struct_field struct_field_list
 
 %start program 
 %%
@@ -388,11 +388,21 @@ define_native: T_NATIVE T_IDENTIFIER '(' function_arguments ')' '<' typename '>'
              | T_NATIVE T_IDENTIFIER '(' function_arguments ')' ';'  { $$ = NODE_ABS(AM_S_NATIVE, $4, NULL, $2); }
              ;
 
-meta_tag_values: meta_tag_values expression_literal          { $$ = NODE_AB(AM_S_EXPRESSIONS, $1, $2); }
+struct_field: meta_tag_section typename T_VARIABLE ';'       { $$ =  NODE_ABS(AM_S_STRUCT_FIELD, $1, $2, $3); }
+            ;
+
+struct_field_list: struct_field_list struct_field            { $$ = NODE_AB(AM_S_STRUCT_FIELD_LIST, $1, $2); }
+                 | struct_field                              { $$ = $1; }
+                 ;
+
+define_struct: T_STRUCT T_IDENTIFIER '{' struct_field_list '}' { $$ = NODE_AS(AM_S_STRUCT, $4, $2); }
+             ;
+
+meta_tag_values: meta_tag_values ',' expression_literal      { $$ = NODE_AB(AM_S_EXPRESSIONS, $1, $3); }
                | expression_literal                          { $$ = $1; }
                ;
 
-meta_tag: '@' T_IDENTIFIER meta_tag_values                   { $$ = NODE_AS(AM_S_META_TAG, $3, $2); }
+meta_tag: '@' T_IDENTIFIER '(' meta_tag_values ')'           { $$ = NODE_AS(AM_S_META_TAG, $4, $2); }
         | '@' T_IDENTIFIER                                   { $$ = NODE_AS(AM_S_META_TAG, NULL, $2); }
         ;
 
@@ -408,6 +418,7 @@ define_right_side: define_func                               { $$ = $1; }
                  | define_const                              { $$ = $1; }
                  | define_alias                              { $$ = $1; }
                  | define_native                             { $$ = $1; }
+                 | define_struct                             { $$ = $1; }
                  ;
 
 block_define: meta_tag_section T_DEFINE define_right_side    { $$ = NODE_AB(AM_S_DEFINE, $1, $3); }
