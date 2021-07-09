@@ -107,6 +107,7 @@ typedef enum {
         AM_S_META_TAG,
         AM_S_META_TAG_LIST,
         AM_S_DEFINE,
+        AM_S_ALIAS,
 } am_node_mean_t;
 
 typedef struct am_node_t_ {

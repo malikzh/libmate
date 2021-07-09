@@ -60,7 +60,7 @@
 %token T_EOF 0 "T_EOF"
 %token T_UNDEFINED
 
-%token T_IDENTIFIER T_VARIABLE T_STRING T_INTEGER T_FLOAT T_TRUE T_FALSE
+%token T_IDENTIFIER T_VARIABLE T_STRING T_INTEGER T_FLOAT T_TRUE T_FALSE T_ALIAS
 %token T_INCREMENT T_DECREMENT T_LTE T_GTE T_EQUAL T_NOT_EQUAL T_POWER
 %token T_ASSIGN_ADD T_ASSIGN_SUB T_ASSIGN_MUL T_ASSIGN_DIV T_ASSIGN_MOD
 %token T_NOT T_AND T_OR T_IMPLEMENTS T_TYPEOF T_FUNC T_DEFER T_IF T_ELSE T_DUMP
@@ -81,6 +81,7 @@
 %type <node> expression_list stmt_for_init_expression stmt_for_init_expression_list require_item
 %type <node> require_item_list block_require block_define define_func block_define_list block_definitions
 %type <node> meta_tag_values meta_tag_list meta_tag_section meta_tag define_const define_right_side
+%type <node> define_alias typename_id
 
 %start program 
 %%
@@ -98,12 +99,15 @@ typename_func: T_FUNC '(' function_arguments_types_only ')' '<' typename '>'  { 
              | T_FUNC '(' function_arguments_types_only ')' { $$ = NODE_A(AM_S_TYPENAME_FUNC, $3); }
              ;
 
-typename: typename '|' symbol                           { $$ = NODE_AB(AM_S_TYPENAME, $1, $3); }
-        | symbol '[' ']'                                { $$ = NODE_A(AM_S_TYPENAME_ARRAY_OF, $1); }
+typename_id: symbol '[' ']'                                { $$ = NODE_A(AM_S_TYPENAME_ARRAY_OF, $1); }
         | symbol                                        { $$ = $1; }
         | T_ARRAY                                       { $$ = NODE(AM_S_TYPENAME_ARRAY); }
         | T_STRUCT                                      { $$ = NODE(AM_S_TYPENAME_STRUCT); }
         | typename_func                                 { $$ = NODE_A(AM_S_TYPENAME_FUNC, $1); }
+        ;
+
+typename: typename '|' typename_id                      { $$ = NODE_AB(AM_S_TYPENAME, $1, $3); }
+        | typename_id                                   { $$ = $1; }
         ;
 
 array_literal_items: array_literal_items ',' expression { $$ = NODE_AB(AM_S_ARRAY_ITEMS, $1, $3); }
@@ -377,6 +381,9 @@ define_func: T_FUNC symbol '(' function_arguments ')' '<' typename '>' '{' funct
 define_const: T_CONST T_VARIABLE '=' expression ';'          { $$ = NODE_AS(AM_S_CONST, $4, $2); }
             ;
 
+define_alias: T_ALIAS T_IDENTIFIER typename ';'              { $$ = NODE_AS(AM_S_ALIAS, $3, $2); }
+            ;
+
 meta_tag_values: meta_tag_values expression_literal          { $$ = NODE_AB(AM_S_EXPRESSIONS, $1, $2); }
                | expression_literal                          { $$ = $1; }
                ;
@@ -395,6 +402,7 @@ meta_tag_section: %empty                                     { $$ = NULL; }
 
 define_right_side: define_func                               { $$ = $1; }
                  | define_const                              { $$ = $1; }
+                 | define_alias                              { $$ = $1; }
                  ;
 
 block_define: meta_tag_section T_DEFINE define_right_side    { $$ = NODE_AB(AM_S_DEFINE, $1, $3); }

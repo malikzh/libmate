@@ -116,6 +116,7 @@ bin        [01]
     "return"                 return T_RETURN;
     "const"                  return T_CONST;
     "native"                 return T_NATIVE;
+    "alias"                  return T_ALIAS;
 
     {alpha}{alphadigit}*     { yylval->str = strdup(yytext); return T_IDENTIFIER; }
     \"                       { BEGIN(STRING_D); STRBUF_CLEAR(); }
