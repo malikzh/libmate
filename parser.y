@@ -68,7 +68,7 @@
 %token T_WHILE T_FOR T_STRUCT T_ARRAY T_IFACE T_NULL T_VAR T_RETURN T_CONST T_NATIVE
 
 %type <str> T_IDENTIFIER T_STRING T_INTEGER T_FLOAT T_VARIABLE
-%type <node> source_code expression_primary symbol expression_literal expression array_literal_items
+%type <node> expression_primary symbol expression_literal expression array_literal_items
 %type <node> array_literal struct_literal_items struct_literal_item struct_literal function_body
 %type <node> typename function_argument function_arguments expression_function function_call
 %type <node> expression_postfix expression_prefix expression_mul expression_power expression_add
@@ -82,7 +82,7 @@
 %type <node> require_item_list block_require block_define define_func block_define_list block_definitions
 %type <node> meta_tag_values meta_tag_list meta_tag_section meta_tag define_const define_right_side
 %type <node> define_alias typename_id define_native define_struct struct_field struct_field_list
-%type <node> define_iface iface_func iface_func_list
+%type <node> define_iface iface_func iface_func_list program
 
 %start program 
 %%
@@ -447,10 +447,7 @@ block_definitions: %empty                                    { $$ = NULL; }
                  | block_define_list                         { $$ = $1; }
                  ;
 
-source_code: block_require block_definitions                 { $$ = NODE_AB(AM_S_ROOT, $1, $2); }
-           ;
-
-program: source_code                                    { info->root = $1; }
+program: block_require block_definitions                 { $$ = NODE_AB(AM_S_ROOT, $1, $2); }
        ;
 %%
 
