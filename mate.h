@@ -111,6 +111,9 @@ typedef enum {
         AM_S_NATIVE,
         AM_S_STRUCT_FIELD,
         AM_S_STRUCT_FIELD_LIST,
+        AM_S_IFACE_FUNC,
+        AM_S_FUNC_LIST,
+        AM_S_IFACE,
 } am_node_mean_t;
 
 typedef struct am_node_t_ {
