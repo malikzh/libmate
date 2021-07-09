@@ -80,7 +80,7 @@
 %type <node> stmt_for_init stmt_for_condition stmt_for_action stmt_for stmt_for_head stmt_foreach_head
 %type <node> expression_list stmt_for_init_expression stmt_for_init_expression_list require_item
 %type <node> require_item_list block_require block_define define_func block_define_list block_definitions
-%type <node> meta_tag_values meta_tag_list meta_tag_section meta_tag
+%type <node> meta_tag_values meta_tag_list meta_tag_section meta_tag define_const define_right_side
 
 %start program 
 %%
@@ -290,7 +290,7 @@ stmt_var_expression: '=' expression                          { $$ = $2; }
 stmt_var: T_VAR T_VARIABLE stmt_var_type stmt_var_expression ';'   { $$ = NODE_ABS(AM_S_VAR, $3, $4, $2); }
         ;
 
-stmt_const: T_CONST T_VARIABLE ':' typename '=' expression ';'     { $$ = NODE_ABS(AM_S_CONST, $4, $6, $2); }
+stmt_const: T_CONST T_VARIABLE '=' expression ';'     { $$ = NODE_AS(AM_S_CONST, $4, $2); }
           ;
 
 stmt_return: T_RETURN expression ';'                         { $$ = NODE_A(AM_I_RETURN, $2); }
@@ -374,6 +374,9 @@ define_func: T_FUNC symbol '(' function_arguments ')' '<' typename '>' '{' funct
            | T_FUNC symbol '(' function_arguments ')' '{' function_body '}' { $$ = NODE_ABCD(AM_S_FUNC, $2, $4, NULL, $7); }
            ;
 
+define_const: T_CONST T_VARIABLE '=' expression ';'          { $$ = NODE_AS(AM_S_CONST, $4, $2); }
+            ;
+
 meta_tag_values: meta_tag_values expression_literal          { $$ = NODE_AB(AM_S_EXPRESSIONS, $1, $2); }
                | expression_literal                          { $$ = $1; }
                ;
@@ -390,7 +393,11 @@ meta_tag_section: %empty                                     { $$ = NULL; }
                 | meta_tag_list                              { $$ = $1; }
                 ;
 
-block_define: meta_tag_section T_DEFINE define_func          { $$ = NODE_AB(AM_S_DEFINE, $1, $3); }
+define_right_side: define_func                               { $$ = $1; }
+                 | define_const                              { $$ = $1; }
+                 ;
+
+block_define: meta_tag_section T_DEFINE define_right_side    { $$ = NODE_AB(AM_S_DEFINE, $1, $3); }
             ;
 
 block_define_list: block_define_list block_define            { $$ = NODE_AB(AM_S_DEFINES, $1, $2); }
