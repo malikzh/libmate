@@ -8,6 +8,10 @@ int main(int argc, char** argv) {
 
     auto ast = am_parser_get_ast_root(parser);
 
+    am_processor_t* proc = (am_processor_t*)calloc(1, sizeof(am_processor_t));
+
+    am_parser_process_ast(parser, proc, NULL);
+
     std::cout <<  "end" << std::endl;
     return 0;
 }

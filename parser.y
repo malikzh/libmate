@@ -365,7 +365,7 @@ function_body: %empty                                        { $$ = NULL; }
 
 require_item: T_IDENTIFIER T_STRING                          { $$ = NODE_SS(AM_S_REQUIRE_ITEM, $1, $2); }
             | '.' T_STRING                                   { $$ = NODE_SS(AM_S_REQUIRE_ITEM, ".", $2); }
-            | T_STRING                                       { $$ = NODE_S(AM_S_REQUIRE_ITEM, $1); }
+            | T_STRING                                       { $$ = NODE_SS(AM_S_REQUIRE_ITEM, NULL, $1); }
             ;
 
 require_item_list: require_item_list require_item            { $$ = NODE_AB(AM_S_REQUIRE_ITEM_LIST, $1, $2);  }
@@ -448,7 +448,7 @@ block_definitions: %empty                                    { $$ = NULL; }
                  | block_define_list                         { $$ = $1; }
                  ;
 
-program: block_require block_definitions                 { $$ = NODE_AB(AM_S_ROOT, $1, $2); }
+program: block_require block_definitions                 { info->root = NODE_AB(AM_S_ROOT, $1, $2); }
        ;
 %%
 
