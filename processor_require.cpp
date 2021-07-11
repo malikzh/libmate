@@ -42,7 +42,7 @@ void pr_require_item(const am_node_t* node, am_parser_t* parser, const am_proces
 
     // Call handler
     if (proc->import_module != NULL) {
-        proc->import_module(node->str, node->str2, parser, param);
+        proc->import_module(node->str, node->str2, parser, &node->location, param);
     } else {
         AM_DBG("WARNING: Module import has no handlers. Import arguments: %s, %s\n", node->str, node->str2);
     }

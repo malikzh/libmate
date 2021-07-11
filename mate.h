@@ -134,7 +134,7 @@ typedef struct am_parser am_parser_t;
 
 // AST Processor
 typedef struct {
-    void (*import_module)(const char* moduleName, const char* moduleUri, am_parser_t* parser, void* param);
+    void (*import_module)(const char* moduleName, const char* moduleUri, am_parser_t* parser, const am_node_location_t* location, void* param);
 } am_processor_t;
 
 #if defined(AM_DEBUG)
