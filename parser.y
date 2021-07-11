@@ -23,6 +23,7 @@
         const char* input;
         am_node_t* root;
         void* scanner;
+        const char* msg;
     };
 }
 
@@ -484,4 +485,12 @@ void am_parser_destroy(am_parser_t* parser) {
     lexer_destroy(parser);
     // TODO: destroy ast tree
     free(parser);
+}
+
+const char* am_parser_get_error(am_parser_t* parser) {
+    return parser->msg;
+}
+
+void am_parser_set_error(am_parser_t* parser, const char* message) {
+    parser->msg = message;
 }
