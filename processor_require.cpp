@@ -13,8 +13,13 @@ void pr_block_require(const am_node_t* node, am_parser_t* parser, const am_proce
 }
 
 void pr_require_item_list(const am_node_t* node, am_parser_t* parser, const am_processor_t* proc, void* param) {
-    if (node->mean != AM_S_REQUIRE_ITEM_LIST) {
+    if (node->mean != AM_S_REQUIRE_ITEM_LIST && node->mean != AM_S_REQUIRE_ITEM) {
         ERROR("Invalid ast node on require_item_list");
+        return;
+    }
+
+    if (node->mean == AM_S_REQUIRE_ITEM) {
+        pr_require_item(node, parser, proc, param);
         return;
     }
 

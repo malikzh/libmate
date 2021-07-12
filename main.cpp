@@ -12,6 +12,8 @@ int main(int argc, char** argv) {
 
     am_parser_process_ast(parser, proc, NULL);
 
-    std::cout <<  "end" << std::endl;
+    auto err = am_parser_get_error(parser);
+
+    std::cout <<  "end. Error message: " << (err != NULL ? err : "NULL" ) << std::endl;
     return 0;
 }
