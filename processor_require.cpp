@@ -1,26 +1,29 @@
 #include "mate.h"
 #include "processor.hpp"
 
-void pr_block_require(const am_node_t* node, am_parser_t* parser, const am_processor_t* proc, void* param) {
+bool pr_block_require(const am_node_t* node, am_parser_t* parser, const am_processor_t* proc, void* param) {
     if (node->mean != AM_S_REQUIRE) {
         ERROR("Invalid ast node on block_require");
-        return;
+        return false;
     }
 
     if (node->a != NULL) {
-        pr_require_item_list(node->a, parser, proc, param);
+        if (!pr_require_item_list(node->a, parser, proc, param)) {
+            return false;
+        }
     }
+
+    return true;
 }
 
-void pr_require_item_list(const am_node_t* node, am_parser_t* parser, const am_processor_t* proc, void* param) {
+bool pr_require_item_list(const am_node_t* node, am_parser_t* parser, const am_processor_t* proc, void* param) {
     if (node->mean != AM_S_REQUIRE_ITEM_LIST && node->mean != AM_S_REQUIRE_ITEM) {
         ERROR("Invalid ast node on require_item_list");
-        return;
+        return false;
     }
 
     if (node->mean == AM_S_REQUIRE_ITEM) {
-        pr_require_item(node, parser, proc, param);
-        return;
+        return pr_require_item(node, parser, proc, param);
     }
 
     auto a = node->a;
@@ -28,27 +31,39 @@ void pr_require_item_list(const am_node_t* node, am_parser_t* parser, const am_p
 
     if (a != NULL) {
         if (a->mean == AM_S_REQUIRE_ITEM_LIST) {
-            pr_require_item_list(a, parser, proc, param);
+            if (!pr_require_item_list(a, parser, proc, param)) {
+                return false;
+            }
         } else {
-            pr_require_item(a, parser, proc, param);
+            if (!pr_require_item(a, parser, proc, param)) {
+                return false;
+            }
         }
     }
 
     if (b != NULL) {
-        pr_require_item(b, parser, proc, param);
+        if (!pr_require_item(b, parser, proc, param)) {
+            return false;
+        }
     }
+
+    return true;
 }
 
-void pr_require_item(const am_node_t* node, am_parser_t* parser, const am_processor_t* proc, void* param) {
+bool pr_require_item(const am_node_t* node, am_parser_t* parser, const am_processor_t* proc, void* param) {
     if (node->mean != AM_S_REQUIRE_ITEM) {
         ERROR("Invalid ast node on require_item");
-        return;
+        return false;
     }
 
     // Call handler
     if (proc->import_module != NULL) {
-        proc->import_module(node->str, node->str2, parser, &node->location, param);
+        if (!proc->import_module(node->str, node->str2, parser, &node->location, param)) {
+            return false;
+        }
     } else {
         AM_DBG("WARNING: Module import has no handlers. Import arguments: %s, %s\n", node->str, node->str2);
     }
+
+    return true;
 }

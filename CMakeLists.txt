@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
 set(CMAKE_C_STANDARD 11)
 
-set(LIBMATE_SRC lexer.h strbuffer.c ast.c ast.h processor.cpp processor.hpp processor_require.cpp processor_define.cpp)
+set(LIBMATE_SRC lexer.h strbuffer.c ast.c ast.h processor.cpp processor.hpp processor_require.cpp)
 set(LIBMATE_TESTS main.cpp)
 
 find_package(bison REQUIRED)
