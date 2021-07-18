@@ -1,6 +1,6 @@
 <div align="center">
 
-<font size="64">🤖</font>
+<font size="48">🤖</font>
 
 <font size="48">libMATE</font>
 
