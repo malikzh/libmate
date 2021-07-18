@@ -20,3 +20,22 @@ am_node_t* ast_create_node(am_node_mean_t meaning, const am_node_location_t* loc
 
     return n;
 }
+
+void ast_free(am_node_t* root) {
+    if (root == NULL) return;
+
+    ast_free(root->a);
+    ast_free(root->b);
+    ast_free(root->c);
+    ast_free(root->d);
+
+    if (root->str != NULL) {
+        free((void*)root->str);
+    }
+
+    if (root->str2 != NULL) {
+        free((void*)root->str2);
+    }
+
+    free(root);
+}

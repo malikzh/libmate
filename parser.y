@@ -488,7 +488,7 @@ am_node_t* am_parser_get_ast_root(am_parser_t* parser) {
 
 void am_parser_destroy(am_parser_t* parser) {
     lexer_destroy(parser);
-    // TODO: destroy ast tree
+    ast_free(parser->root);
     free(parser);
 }
 
