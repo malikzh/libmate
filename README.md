@@ -51,7 +51,7 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 ## Authors
 
-- [@malikzh &lt;Malik Zharykov&gt;](https://github.com/malikzh)
+- [@malikzh](https://github.com/malikzh) &lt;Malik Zharykov&gt;
 
 ## License
 
