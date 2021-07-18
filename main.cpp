@@ -7,6 +7,9 @@ int main(int argc, char** argv) {
     am_parser_destroy(parser);
     auto err = am_parser_get_error(parser);
 
-    std::cout <<  "end. Error message: " << (err != NULL ? err : "NULL" ) << std::endl;
+    // AST root node
+    am_node_t* root_node = am_parser_get_ast_root(parser);
+
+    std::cout << (err != NULL ? err : "NULL" ) << std::endl;
     return 0;
 }
