@@ -23,7 +23,6 @@ jobs:
       run: |
           sudo apt-get update -y
           sudo apt-get install -y flex bison
-          sudo snap install cmake --classic
 
     - name: Build software versions
       run: |
@@ -40,7 +39,7 @@ jobs:
 
     - name: Build
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -DCI_MODE=1
 
 #    - name: Test
 #      working-directory: ${{github.workspace}}/build
