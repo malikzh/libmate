@@ -1,8 +1,8 @@
 <div align="center">
 
-<font size="48">🤖</font>
+<h1>🤖</h1>
 
-<font size="48">libMATE</font>
+<h1>libMATE</h1>
 
 
 <p style="text-align: center;">
