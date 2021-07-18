@@ -19,11 +19,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Install flex bison
+    - name: Install flex bison cmake
       run: |
           sudo apt-get update -y
           sudo apt-get upgrade -y
-          sudo apt-get install -y flex bison extra-cmake-modules
+          sudo apt-get install -y flex bison extra-cmake-modules software-properties-common
+          sudo add-apt-repository ppa:george-edison55/cmake-3.x
+          sudo apt-get install -y cmake
 
     - name: Build software versions
       run: |
