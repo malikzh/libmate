@@ -19,6 +19,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Install flex bison
+      run: |
+          apt-get update
+          apt-get install flex bison
+          flex --version
+          bison --version
+
     - uses: actions/checkout@v2
 
     - name: Configure CMake
