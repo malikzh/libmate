@@ -23,7 +23,7 @@ jobs:
       run: |
           sudo apt-get update -y
           sudo apt-get install -y flex bison
-          sudo snap install -y cmake
+          sudo snap install cmake
 
     - name: Build software versions
       run: |
