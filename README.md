@@ -1,14 +1,32 @@
-# LIBMATE
+<div style="text-align: center; font-size: 64px;">🤖</div>
 
-MATE programming language AST construction library
+<p style="text-align: center;font-weight: bold;font-size: 48px;">libMATE</p>
 
-## Dependencies
+
+<p style="text-align: center;">
+    MATE programming language <a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree">AST</a> construction library
+</p>
+
+
+---
+
+<div style="text-align: center; padding-top: 10px;">
+    <img src="https://github.com/empla/libmate/actions/workflows/cmake.yml/badge.svg" alt="CI Build status">
+    <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/empla/libmate?style=plastic">
+    <img alt="GitHub tag (latest SemVer)" src="https://img.shields.io/github/v/tag/empla/libmate?label=version">
+</div>
+
+---
+
+<div style="height: 30px;">&nbsp;</div>
+
+## 🧩 Dependencies
 
 - [GNU Bison](https://www.gnu.org/software/bison/) v3.7+
 - [Flex](https://github.com/westes/flex) v2.5+
 - [CMake](https://cmake.org/) 3.17
 
-## Build
+## 🛠 Build
 
 ```bash
 mkdir build
@@ -21,7 +39,7 @@ make install
 > If you need debug build type, set 
 > `CMAKE_BUILD_TYPE=Debug`
 
-## Usage
+## 📌 Usage
 
 ```c++
 #include<iostream>
@@ -41,18 +59,18 @@ int main(int argc, char** argv) {
 }
 ```
 
-## Documentation
+## 📖 Documentation
 
 todo
 
-## Contributing
+## 🤝 Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-## Authors
+## 📝 Authors
 
 - [@malikzh](https://github.com/malikzh) &lt;Malik Zharykov&gt;
 
-## License
+## 📄 License
 
 [MIT](./LICENSE)
