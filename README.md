@@ -15,6 +15,7 @@ mkdir build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release ..
 make
+make install
 ```
 
 > If you need debug build type, set 
