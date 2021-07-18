@@ -25,6 +25,8 @@
         void* scanner;
         const char* msg;
     };
+
+    void am_parser_set_error(am_parser_t* parser, const char* message);
 }
 
 %union {
@@ -45,7 +47,6 @@
 }
 
 %{
-        //
         #define NODE(mean) ast_create_node(mean, &yylloc, NULL, NULL, NULL, NULL, NULL, NULL);
         #define NODE_A(mean, a) ast_create_node(mean, &yylloc, a, NULL, NULL, NULL, NULL, NULL);
         #define NODE_AB(mean, a, b) ast_create_node(mean, &yylloc, a, b, NULL, NULL, NULL, NULL);
@@ -352,6 +353,7 @@ statement: expression ';'                                    { $$ = $1; }
          | stmt_return                                       { $$ = $1; }
          | stmt_while                                        { $$ = $1; }
          | stmt_for                                          { $$ = $1; }
+         | ';'                                               { $$ = NULL; }
          ;
 
 statements: statements statement                             { $$ = NODE_AB(AM_S_STATEMENTS, $1, $2); }
@@ -453,7 +455,14 @@ program: block_require block_definitions                 { info->root = NODE_AB(
 %%
 
 void yyerror(am_node_location_t *location, am_parser_t* parser, void *scanner,  const char *msg) {
-    printf("err: %s\n", msg);
+    const char* template = "Error: '%s'. File: %s:%d";
+    int line = (location->first_line == 0 ? location->last_line : location->first_line);
+    size_t sz = snprintf(NULL, 0, template, msg, parser->filename, line);
+
+    char* err = (char*)malloc(sz + 1);
+
+    sprintf(err, template, msg, parser->filename, line);
+    am_parser_set_error(parser, (const char*)err);
 }
 
 am_parser_t* am_parser_create_from_fd(const char* filename, FILE* fd) {
@@ -461,6 +470,7 @@ am_parser_t* am_parser_create_from_fd(const char* filename, FILE* fd) {
     parser->fd = fd;
     parser->input = NULL;
     parser->root = NULL;
+    parser->msg = NULL;
 
     // Initialize scanner
     lexer_initialize(parser);
@@ -492,5 +502,9 @@ const char* am_parser_get_error(am_parser_t* parser) {
 }
 
 void am_parser_set_error(am_parser_t* parser, const char* message) {
+    if (parser->msg != NULL) {
+        free((void*)parser->msg);
+    }
+
     parser->msg = message;
 }
