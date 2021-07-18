@@ -1,6 +1,8 @@
-<div style="text-align: center; font-size: 64px;">🤖</div>
+<div align="center">
 
-<p style="text-align: center;font-weight: bold;font-size: 48px;">libMATE</p>
+<font size="64">🤖</font>
+
+<font size="48">libMATE</font>
 
 
 <p style="text-align: center;">
@@ -10,15 +12,15 @@
 
 ---
 
-<div style="text-align: center; padding-top: 10px;">
+<p>
     <img src="https://github.com/empla/libmate/actions/workflows/cmake.yml/badge.svg" alt="CI Build status">
     <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/empla/libmate?style=plastic">
     <img alt="GitHub tag (latest SemVer)" src="https://img.shields.io/github/v/tag/empla/libmate?label=version">
-</div>
+</p>
 
 ---
 
-<div style="height: 30px;">&nbsp;</div>
+</div>
 
 ## 🧩 Dependencies
 
