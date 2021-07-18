@@ -471,6 +471,7 @@ am_parser_t* am_parser_create_from_fd(const char* filename, FILE* fd) {
     parser->input = NULL;
     parser->root = NULL;
     parser->msg = NULL;
+    parser->filename = filename;
 
     // Initialize scanner
     lexer_initialize(parser);
