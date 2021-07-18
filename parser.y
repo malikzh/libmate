@@ -478,11 +478,6 @@ am_parser_t* am_parser_create_from_fd(const char* filename, FILE* fd) {
     return parser;
 }
 
-am_parser_t* am_parser_create_from_str(const char* filename, const char* input) {
-    // TODO: create string parser;
-    return NULL;
-}
-
 int am_parser_parse(am_parser_t* parser) {
     return yyparse(parser, parser->scanner);
 }

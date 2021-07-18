@@ -140,7 +140,6 @@ typedef struct am_parser am_parser_t;
 #endif
 
 am_parser_t* am_parser_create_from_fd(const char* filename, FILE* fd);
-am_parser_t* am_parser_create_from_str(const char* filename, const char* input);
 int am_parser_parse(am_parser_t* parser);
 am_node_t* am_parser_get_ast_root(am_parser_t* parser);
 const char* am_parser_get_error(am_parser_t* parser);
