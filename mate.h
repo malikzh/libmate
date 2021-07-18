@@ -133,11 +133,6 @@ typedef struct am_node_t_ {
 struct am_parser;
 typedef struct am_parser am_parser_t;
 
-// AST Processor
-typedef struct {
-    bool (*import_module)(const char* moduleName, const char* moduleUri, am_parser_t* parser, const am_node_location_t* location, void* param);
-} am_processor_t;
-
 #if defined(AM_DEBUG)
 #   define AM_DBG(...) printf(__VA_ARGS__);
 #else
@@ -148,7 +143,6 @@ am_parser_t* am_parser_create_from_fd(const char* filename, FILE* fd);
 am_parser_t* am_parser_create_from_str(const char* filename, const char* input);
 int am_parser_parse(am_parser_t* parser);
 am_node_t* am_parser_get_ast_root(am_parser_t* parser);
-bool am_parser_process_ast(am_parser_t* parser, const am_processor_t* processor, void* param);
 const char* am_parser_get_error(am_parser_t* parser);
 void am_parser_destroy(am_parser_t* parser);
 
