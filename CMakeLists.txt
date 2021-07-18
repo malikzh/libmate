@@ -7,6 +7,10 @@ set(CMAKE_C_STANDARD 11)
 set(LIBMATE_SRC lexer.h strbuffer.c ast.c ast.h)
 set(LIBMATE_TESTS main.cpp)
 
+if (CI_MODE EQUAL 1)
+    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/.github/cmake-modules)
+endif()
+
 find_package(bison REQUIRED)
 find_package(flex REQUIRED)
 
