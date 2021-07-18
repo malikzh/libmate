@@ -22,6 +22,7 @@ jobs:
     - name: Install flex bison
       run: |
           sudo apt-get update -y
+          sudo apt-get upgrade -y
           sudo apt-get install -y flex bison extra-cmake-modules
 
     - name: Build software versions
