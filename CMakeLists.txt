@@ -48,3 +48,6 @@ else()
     message("INFO: Build mode is DEBUG")
     target_compile_definitions(mate PRIVATE AM_DEBUG)
 endif()
+
+install(TARGETS mate DESTINATION lib)
+install(FILES mate.h DESTINATION include)
