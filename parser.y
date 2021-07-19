@@ -479,6 +479,20 @@ am_parser_t* am_parser_create_from_fd(const char* filename, FILE* fd) {
     return parser;
 }
 
+am_parser_t* am_parser_create_from_str(const char* filename, const char* str) {
+    am_parser_t* parser = (am_parser_t*)malloc(sizeof(am_parser_t));
+    parser->fd = NULL;
+    parser->input = str;
+    parser->root = NULL;
+    parser->msg = NULL;
+    parser->filename = filename;
+
+    // Initialize scanner
+    lexer_initialize(parser);
+
+    return parser;
+}
+
 int am_parser_parse(am_parser_t* parser) {
     return yyparse(parser, parser->scanner);
 }

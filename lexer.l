@@ -171,7 +171,14 @@ bin        [01]
 
 void lexer_initialize(am_parser_t* parser) {
     yylex_init_extra(parser, &parser->scanner);
-    yyrestart(parser->fd, parser->scanner);
+
+    if (parser->fd != NULL) {
+        yyrestart(parser->fd, parser->scanner);
+    } else {
+        yyrestart(NULL, parser->scanner);
+        yy_scan_string(parser->input, parser->scanner);
+    }
+    
 }
 
 void lexer_destroy(am_parser_t* parser) {
