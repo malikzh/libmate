@@ -22,6 +22,15 @@
 
 </div>
 
+## ✨ Features
+
+- Linux, Mac OS, Windows support
+- x86/amd64/arm support
+- [Emscripten](https://emscripten.org/) support
+- Reading input from string and file directly
+- Parser/Lexer written in [Bison](./parser.y) and [Flex](./lexer.l)
+- Very lightweight library
+
 ## 🧩 Dependencies
 
 - [GNU Bison](https://www.gnu.org/software/bison/) v3.7+
@@ -76,3 +85,6 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 ## 📄 License
 
 [MIT](./LICENSE)
+
+
+Made by Malik Zharykov with ❤️
