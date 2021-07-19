@@ -20,7 +20,7 @@ jobs:
     - name: Build software versions
       run: |
           cmake --version
-          flex --version
+          C:\ProgramData\chocolatey\lib\winflexbison3\tools\flex --version
           bison --version
     
     - uses: actions/checkout@v2
