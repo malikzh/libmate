@@ -28,7 +28,7 @@
 %option outfile="lexer.c"
 %option noinput nounput noyywrap 8bit nodefault                                 
 %option yylineno
-%option reentrant bison-bridge bison-locations
+%option reentrant bison-bridge bison-locations nounistd never-interactive
 
 whitespace [ \t]
 newline    [\r\n]
