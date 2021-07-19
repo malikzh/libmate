@@ -24,6 +24,7 @@
         am_node_t* root;
         void* scanner;
         const char* msg;
+        struct yy_buffer_state* buffer;
     };
 
     void am_parser_set_error(am_parser_t* parser, const char* message);
@@ -472,6 +473,7 @@ am_parser_t* am_parser_create_from_fd(const char* filename, FILE* fd) {
     parser->root = NULL;
     parser->msg = NULL;
     parser->filename = filename;
+    parser->buffer = NULL;
 
     // Initialize scanner
     lexer_initialize(parser);
@@ -486,6 +488,7 @@ am_parser_t* am_parser_create_from_str(const char* filename, const char* str) {
     parser->root = NULL;
     parser->msg = NULL;
     parser->filename = filename;
+    parser->buffer = NULL;
 
     // Initialize scanner
     lexer_initialize(parser);

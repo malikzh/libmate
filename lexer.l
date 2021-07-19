@@ -176,11 +176,15 @@ void lexer_initialize(am_parser_t* parser) {
         yyrestart(parser->fd, parser->scanner);
     } else {
         yyrestart(NULL, parser->scanner);
-        yy_scan_string(parser->input, parser->scanner);
+        parser->buffer = yy_scan_string(parser->input, parser->scanner);
     }
     
 }
 
 void lexer_destroy(am_parser_t* parser) {
+    if (parser->buffer != NULL) {
+        yy_delete_buffer(parser->buffer, parser->scanner);
+    }
+
     yylex_destroy(parser->scanner);
 }
