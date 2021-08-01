@@ -85,7 +85,7 @@
 %type <node> require_item_list block_require block_define define_func block_define_list block_definitions
 %type <node> meta_tag_values meta_tag_list meta_tag_section meta_tag define_const define_right_side
 %type <node> define_alias typename_id define_native define_struct struct_field struct_field_list
-%type <node> define_iface iface_func iface_func_list program
+%type <node> define_iface iface_func iface_func_list program iface_extends iface_extends_list
 
 %start program 
 %%
@@ -412,8 +412,16 @@ iface_func_list: iface_func_list iface_func                            { $$ = NO
                | iface_func                                             { $$ = $1; }
                ;
 
-define_iface: T_IFACE T_IDENTIFIER '{' iface_func_list '}'              { $$ = NODE_AS(AM_S_IFACE, $4, $2); }
-            | T_IFACE T_IDENTIFIER '{' '}'                              { $$ = NODE_AS(AM_S_IFACE, NULL, $2); }
+iface_extends_list: symbol                                              { $$ = $1; }
+                  | iface_extends_list ',' symbol                       { $$ = NODE_AB(AM_S_IFACE_EXTENDS_LIST, $1, $3); }
+                  ;
+
+iface_extends: ':' iface_extends_list                                   { $$ = $2; }
+             | %empty                                                   { $$ = NULL; }
+             ;
+
+define_iface: T_IFACE T_IDENTIFIER iface_extends '{' iface_func_list '}'              { $$ = NODE_ABS(AM_S_IFACE, $5, $3, $2); }
+            | T_IFACE T_IDENTIFIER iface_extends '{' '}'                              { $$ = NODE_ABS(AM_S_IFACE, NULL, $3, $2); }
             ;
 
 meta_tag_values: meta_tag_values ',' expression_literal      { $$ = NODE_AB(AM_S_EXPRESSIONS, $1, $3); }

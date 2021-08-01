@@ -115,6 +115,7 @@ typedef enum {
         AM_S_IFACE_FUNC,
         AM_S_FUNC_LIST,
         AM_S_IFACE,
+        AM_S_IFACE_EXTENDS_LIST,
 } am_node_mean_t;
 
 typedef struct am_node_t_ {
