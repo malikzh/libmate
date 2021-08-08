@@ -29,6 +29,8 @@ void ast_free(am_node_t* root) {
     ast_free(root->c);
     ast_free(root->d);
 
+    // TODO: Fix memory leaks in lexer.c strbuffer.c, remove string copying
+/*
     if (root->str != NULL) {
         free((void*)root->str);
     }
@@ -36,6 +38,6 @@ void ast_free(am_node_t* root) {
     if (root->str2 != NULL) {
         free((void*)root->str2);
     }
-
+*/
     free(root);
 }
