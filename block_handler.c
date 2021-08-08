@@ -124,6 +124,43 @@ bool define_items_handle(am_parser_t* parser, const am_node_t* node, const am_de
                     return handler->native_handler(&ctx);
                 }
 
+                case AM_S_STRUCT: {
+                    am_define_struct_context_t ctx;
+
+                    ctx.param = param;
+                    ctx.parser = parser;
+                    ctx.node = node;
+                    ctx.meta = node->a;
+                    ctx.name = right->str;
+                    ctx.fields = right->a;
+
+                    if (!handler->struct_handler) {
+                        am_parser_set_error(parser, "Struct handler in define block is not set");
+                        return false;
+                    }
+
+                    return handler->struct_handler(&ctx);
+                }
+
+                case AM_S_IFACE: {
+                    am_define_iface_context_t ctx;
+
+                    ctx.param = param;
+                    ctx.parser = parser;
+                    ctx.node = node;
+                    ctx.meta = node->a;
+                    ctx.name = right->str;
+                    ctx.extends = right->b;
+                    ctx.functions = right->a;
+
+                    if (!handler->iface_handler) {
+                        am_parser_set_error(parser, "Iface handler in define block is not set");
+                        return false;
+                    }
+
+                    return handler->iface_handler(&ctx);
+                }
+
                 default:
                     am_parser_set_error(parser, "Invalid right side in define block");
                     return false;
