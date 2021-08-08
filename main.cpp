@@ -34,6 +34,11 @@ int main(int argc, char** argv) {
 
     am_define_handler_t h;
     h.func_handler = parser_define_func;
+    h.const_handler = NULL;
+    h.alias_handler = NULL;
+    h.native_handler = NULL;
+    h.struct_handler = NULL;
+    h.iface_handler = NULL;
 
     am_handle_define_block(parser, root_node, &h, NULL);
 

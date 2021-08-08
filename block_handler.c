@@ -20,6 +20,12 @@ bool require_items_handle(am_parser_t* parser, const am_node_t* node, am_require
         case AM_S_REQUIRE_ITEM:
             ctx.id = node->str;
             ctx.uri = node->str2;
+
+            if (!handler) {
+                am_parser_set_error(parser, "Require items handler is not set");
+                return false;
+            }
+
             return handler(&ctx);
         
         case AM_S_REQUIRE_ITEM_LIST:
@@ -35,32 +41,56 @@ bool define_items_handle(am_parser_t* parser, const am_node_t* node, const am_de
         return true;
     }
 
-    am_define_func_context_t ctx;
-
-    ctx.param = param;
-    ctx.parser = parser;
-    ctx.node = node;
-
     switch(node->mean) {
-        case AM_S_DEFINE:
-            ctx.meta = node->a;
+        case AM_S_DEFINE: {
             am_node_t* right = node->b;
 
             switch (right->mean) {
-                case AM_S_FUNC:
+                case AM_S_FUNC: {
+                    am_define_func_context_t ctx;
+
+                    ctx.param = param;
+                    ctx.parser = parser;
+                    ctx.node = node;
+                    ctx.meta = node->a;
                     ctx.name = symbol_to_str(right->a);
                     ctx.arguments = right->b;
                     ctx.returns = right->c;
                     ctx.body = right->d;
 
+                    if (!handler->func_handler) {
+                        am_parser_set_error(parser, "Function handler in define block is not set");
+                        return false;
+                    }
+
                     bool result = handler->func_handler(&ctx);
                     free((void*)ctx.name);
 
                     return result;
+                }
+                
+                case AM_S_CONST: {
+                    am_define_const_context_t ctx;
+
+                    ctx.param = param;
+                    ctx.parser = parser;
+                    ctx.node = node;
+                    ctx.meta = node->a;
+                    ctx.name = right->str;
+                    ctx.value = right->a;
+
+                    if (!handler->const_handler) {
+                        am_parser_set_error(parser, "Const handler in define block is not set");
+                        return false;
+                    }
+
+                    return handler->const_handler(&ctx);
+                }
                 default:
                     am_parser_set_error(parser, "Invalid right side in define block");
                     return false;
             }
+        }
 
         case AM_S_DEFINES:
             return define_items_handle(parser, node->a, handler, param) && define_items_handle(parser, node->b, handler, param);
@@ -105,6 +135,11 @@ bool am_handle_define_block(am_parser_t* parser, const am_node_t* node, const am
 
     if (block_define->mean != AM_S_DEFINES && block_define->mean != AM_S_DEFINE) {
         am_parser_set_error(parser, "Invalid define node");
+        return false;
+    }
+
+    if (!handler) {
+        am_parser_set_error(parser, "Handler for define block is null");
         return false;
     }
 
