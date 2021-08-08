@@ -134,11 +134,43 @@ typedef struct am_node_t_ {
 struct am_parser;
 typedef struct am_parser am_parser_t;
 
+typedef enum {
+    AM_LITERAL_NULL = 0,
+    AM_LITERAL_STR,
+    AM_LITERAL_INT,
+    AM_LITERAL_FLOAT,
+    AM_LITERAL_TRUE,
+    AM_LITERAL_FALSE,
+    AM_LITERAL_VAR,
+
+} am_simple_literal_type_t;
+
 #if defined(AM_DEBUG)
 #   define AM_DBG(...) printf(__VA_ARGS__);
 #else
 #   define AM_DBG(...)
 #endif
+
+
+// Traverse Context
+
+// Handlers
+typedef bool (am_require_handler_t)(const char* id, const char* uri, const am_node_t* node, void* param);
+typedef bool (am_define_const_handler_t)(const am_node_t* meta, const char* name, const am_node_t* value, const am_node_t* node, void* param);
+typedef bool (am_define_func_handler_t)(const am_node_t* meta, const char* name, const am_node_t* arguments, const char** returns, const am_node_t* body, const am_node_t* node, void* param);
+typedef bool (am_define_alias_handler_t)(const am_node_t* meta, const char* name, const char** types, const am_node_t* node, void* param);
+typedef bool (am_define_native_handler_t)(const am_node_t* meta, const char* name, const am_node_t* arguments, const char** returns, const am_node_t* node, void* param);
+typedef bool (am_define_struct_handler_t)(const am_node_t* meta, const char* name, const am_node_t* fields, const am_node_t* node, void* param);
+typedef bool (am_define_iface_handler_t)(const am_node_t* meta, const char* name, const am_node_t* extends, const am_node_t* functions, const am_node_t* node, void* param);
+
+typedef struct {
+    am_define_const_handler_t* const_handler;
+    am_define_func_handler_t* func_handler;
+    am_define_alias_handler_t* alias_handler;
+    am_define_native_handler_t* native_handler;
+    am_define_struct_handler_t* struct_handler;
+    am_define_iface_handler_t* iface_handler;
+} am_define_handler_t;
 
 am_parser_t* am_parser_create_from_fd(const char* filename, FILE* fd);
 am_parser_t* am_parser_create_from_str(const char* filename, const char* str);
@@ -146,6 +178,10 @@ int am_parser_parse(am_parser_t* parser);
 am_node_t* am_parser_get_ast_root(am_parser_t* parser);
 const char* am_parser_get_error(am_parser_t* parser);
 void am_parser_destroy(am_parser_t* parser);
+
+// AST Handler
+bool am_handle_require_block(const am_node_t* node, am_require_handler_t* handler, void* param);
+bool am_handle_define_block(const am_node_t* node, const am_define_handler_t* handler, void* param);
 
 #ifdef __cplusplus
     }
