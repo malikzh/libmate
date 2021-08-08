@@ -8,6 +8,11 @@ bool parser_require(const am_require_context_t* ctx) {
     return true;
 }
 
+bool parser_define_func(const am_define_func_context_t* ctx) {
+    printf("\n---\ndefined func: %s\n---\n", ctx->name);
+    return true;
+}
+
 int main(int argc, char** argv) {
     FILE* fd = fopen("./test.sample.mate", "r");
 
@@ -27,7 +32,12 @@ int main(int argc, char** argv) {
 
     am_handle_require_block(parser, root_node, &parser_require, NULL);
 
-    std::cout << (err != NULL ? err : "NULL" ) << std::endl;
+    am_define_handler_t h;
+    h.func_handler = parser_define_func;
+
+    am_handle_define_block(parser, root_node, &h, NULL);
+
+    printf("\n\nError message: %s\n", am_parser_get_error(parser));
 
     am_parser_destroy(parser);
     return 0;

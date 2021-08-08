@@ -524,9 +524,5 @@ const char* am_parser_get_error(am_parser_t* parser) {
 }
 
 void am_parser_set_error(am_parser_t* parser, const char* message) {
-    if (parser->msg != NULL) {
-        free((void*)parser->msg);
-    }
-
     parser->msg = message;
 }
