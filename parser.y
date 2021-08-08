@@ -158,13 +158,13 @@ expression_literal: T_STRING                            { $$ = NODE_S(AM_S_STRIN
                   | array_literal                       { $$ = NODE_A(AM_S_ARRAY, $1); }
                   | struct_literal                      { $$ = NODE_A(AM_S_STRUCT, $1); }
                   | expression_function                 { $$ = $1; }
+                  | T_VARIABLE                          { $$ = NODE_S(AM_I_RESOLVE_VARIABLE, $1); }
+                  | T_IDENTIFIER                        { $$ = NODE_S(AM_S_SYMBOL, $1); }
                   ;
 
 
 
-expression_primary: T_VARIABLE                          { $$ = NODE_S(AM_I_RESOLVE_VARIABLE, $1); }
-                  | T_IDENTIFIER                        { $$ = NODE_S(AM_S_SYMBOL, $1); }
-                  | expression_literal                  { $$ = $1; }
+expression_primary: expression_literal                  { $$ = $1; }
                   | '(' expression ')'                  { $$ = $2; }
                   ;
 
@@ -376,6 +376,7 @@ require_item_list: require_item_list require_item            { $$ = NODE_AB(AM_S
                  ;
 
 block_require: T_REQUIRE '(' require_item_list ')'           { $$ = NODE_A(AM_S_REQUIRE, $3); }
+             | T_REQUIRE '(' ')'                             { $$ = NULL; }
              | %empty                                        { $$ = NULL; }
              ;
 
@@ -523,9 +524,5 @@ const char* am_parser_get_error(am_parser_t* parser) {
 }
 
 void am_parser_set_error(am_parser_t* parser, const char* message) {
-    if (parser->msg != NULL) {
-        free((void*)parser->msg);
-    }
-
     parser->msg = message;
 }

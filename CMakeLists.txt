@@ -3,7 +3,7 @@ project(libmate)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_C_STANDARD 11)
 
-set(LIBMATE_SRC lexer.h strbuffer.c ast.c ast.h)
+set(LIBMATE_SRC lexer.h strbuffer.c ast.c ast.h handler.h handler.c block_handler.c)
 set(LIBMATE_TESTS main.cpp)
 
 if (CI_MODE EQUAL 1)
