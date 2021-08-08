@@ -105,6 +105,25 @@ bool define_items_handle(am_parser_t* parser, const am_node_t* node, const am_de
                     return handler->alias_handler(&ctx);
                 }
 
+                case AM_S_NATIVE: {
+                    am_define_native_context_t ctx;
+
+                    ctx.param = param;
+                    ctx.parser = parser;
+                    ctx.node = node;
+                    ctx.meta = node->a;
+                    ctx.name = right->str;
+                    ctx.returns = right->b;
+                    ctx.arguments = right->a;
+
+                    if (!handler->native_handler) {
+                        am_parser_set_error(parser, "Native handler in define block is not set");
+                        return false;
+                    }
+
+                    return handler->native_handler(&ctx);
+                }
+
                 default:
                     am_parser_set_error(parser, "Invalid right side in define block");
                     return false;
