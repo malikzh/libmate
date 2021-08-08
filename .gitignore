@@ -6,3 +6,4 @@ parser.c
 parser.h
 lexer.c
 /parser.output
+*.sample.mate

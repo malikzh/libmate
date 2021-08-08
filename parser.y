@@ -376,6 +376,7 @@ require_item_list: require_item_list require_item            { $$ = NODE_AB(AM_S
                  ;
 
 block_require: T_REQUIRE '(' require_item_list ')'           { $$ = NODE_A(AM_S_REQUIRE, $3); }
+             | T_REQUIRE '(' ')'                             { $$ = NULL; }
              | %empty                                        { $$ = NULL; }
              ;
 

@@ -152,16 +152,23 @@ typedef enum {
 #endif
 
 
-// Traverse Context
+// Handlers context
+typedef struct {
+    const char* id;
+    const char* uri;
+    const am_node_t* node;
+    am_parser_t* parser;
+    void* param;
+} am_require_context_t;
 
 // Handlers
-typedef bool (am_require_handler_t)(const char* id, const char* uri, const am_node_t* node, void* param);
-typedef bool (am_define_const_handler_t)(const am_node_t* meta, const char* name, const am_node_t* value, const am_node_t* node, void* param);
-typedef bool (am_define_func_handler_t)(const am_node_t* meta, const char* name, const am_node_t* arguments, const char** returns, const am_node_t* body, const am_node_t* node, void* param);
-typedef bool (am_define_alias_handler_t)(const am_node_t* meta, const char* name, const char** types, const am_node_t* node, void* param);
-typedef bool (am_define_native_handler_t)(const am_node_t* meta, const char* name, const am_node_t* arguments, const char** returns, const am_node_t* node, void* param);
-typedef bool (am_define_struct_handler_t)(const am_node_t* meta, const char* name, const am_node_t* fields, const am_node_t* node, void* param);
-typedef bool (am_define_iface_handler_t)(const am_node_t* meta, const char* name, const am_node_t* extends, const am_node_t* functions, const am_node_t* node, void* param);
+typedef bool (am_require_handler_t)(const am_require_context_t* ctx);
+typedef bool (am_define_const_handler_t)(const am_node_t* meta, const char* name, const am_node_t* value, const am_node_t* node, am_parser_t* parser, void* param);
+typedef bool (am_define_func_handler_t)(const am_node_t* meta, const char* name, const am_node_t* arguments, const char** returns, const am_node_t* body, const am_node_t* node, am_parser_t* parser, void* param);
+typedef bool (am_define_alias_handler_t)(const am_node_t* meta, const char* name, const char** types, const am_node_t* node, am_parser_t* parser, void* param);
+typedef bool (am_define_native_handler_t)(const am_node_t* meta, const char* name, const am_node_t* arguments, const char** returns, const am_node_t* node, am_parser_t* parser, void* param);
+typedef bool (am_define_struct_handler_t)(const am_node_t* meta, const char* name, const am_node_t* fields, const am_node_t* node, am_parser_t* parser, void* param);
+typedef bool (am_define_iface_handler_t)(const am_node_t* meta, const char* name, const am_node_t* extends, const am_node_t* functions, const am_node_t* node, am_parser_t* parser, void* param);
 
 typedef struct {
     am_define_const_handler_t* const_handler;
@@ -180,8 +187,8 @@ const char* am_parser_get_error(am_parser_t* parser);
 void am_parser_destroy(am_parser_t* parser);
 
 // AST Handler
-bool am_handle_require_block(const am_node_t* node, am_require_handler_t* handler, void* param);
-bool am_handle_define_block(const am_node_t* node, const am_define_handler_t* handler, void* param);
+bool am_handle_require_block(am_parser_t* parser, const am_node_t* node, am_require_handler_t* handler, void* param);
+bool am_handle_define_block(am_parser_t* parser, const am_node_t* node, const am_define_handler_t* handler, void* param);
 
 #ifdef __cplusplus
     }
