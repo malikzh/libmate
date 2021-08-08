@@ -86,6 +86,25 @@ bool define_items_handle(am_parser_t* parser, const am_node_t* node, const am_de
 
                     return handler->const_handler(&ctx);
                 }
+
+                case AM_S_ALIAS: {
+                    am_define_alias_context_t ctx;
+
+                    ctx.param = param;
+                    ctx.parser = parser;
+                    ctx.node = node;
+                    ctx.meta = node->a;
+                    ctx.name = right->str;
+                    ctx.types = right->a;
+
+                    if (!handler->alias_handler) {
+                        am_parser_set_error(parser, "Alias handler in define block is not set");
+                        return false;
+                    }
+
+                    return handler->alias_handler(&ctx);
+                }
+
                 default:
                     am_parser_set_error(parser, "Invalid right side in define block");
                     return false;

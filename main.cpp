@@ -27,6 +27,11 @@ int main(int argc, char** argv) {
     
     auto err = am_parser_get_error(parser);
 
+    if (err != NULL) {
+        printf("ERR: %s\n", err);
+        return 2;
+    }
+
     // AST root node
     am_node_t* root_node = am_parser_get_ast_root(parser);
 
